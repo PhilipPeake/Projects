@@ -1,0 +1,45 @@
+[student@training1 ds1]$ ./bin/dsconfig create-result-criteria \
+> -p 1189 -D "cn=Directory Manager" -w password -n \
+> --criteria-name "Failed Auth Result Criteria" \
+> --type simple \
+> --set result-code-criteria:selected-result-codes \
+> --set result-code-value:auth-method-not-supported \
+> --set result-code-value:authorization-denied \
+> --set result-code-value:confidentiality-required \
+> --set result-code-value:inappropriate-authentication \
+> --set result-code-value:insufficient-access-rights \
+> --set result-code-value:invalid-credentials \
+> --set result-code-value:strong-auth-required
+
+The Simple Result Criteria was created successfully
+[student@training1 ds1]$ ./bin/dsconfig create-log-publisher  \
+> -p 1189 -D "cn=Directory Manager" -w password -n \
+> --publisher-name "Failed Authentications Logger"  \
+> --type file-based-access  \
+> --set enabled:true  \
+> --set "result-criteria:Failed Auth Result Criteria"  \
+> --set include-instance-name:true  \
+> --set include-requester-ip-address:true  \
+> --set include-requester-dn:true  \
+> --set log-file:logs/failed-auths \
+> --set "rotation-policy:24 Hours Time Limit Rotation Policy" \
+> --set "rotation-policy:Size Limit Rotation Policy"  \
+> --set "retention-policy:File Count Retention Policy"  \
+> --set "retention-policy:Free Disk Space Retention Policy"
+
+The File Based Access Log Publisher was created successfully
+[student@training1 ds1]$ ./bin/ldapsearch -p 1189 \
+> -D "cn=directory manager" -w bad-password \
+> -b dc=example,dc=com "objectclass=*"
+The simple bind attempt failed
+Result Code:  49 (Invalid Credentials)
+Diagnostic Message:  The simple bind attempt failed
+[student@training1 ds1]$ tail logs/failed-auths 
+# Logger initialized at 01/Dec/2015:15:25:31 -0600
+[01/Dec/2015:15:28:52.058 -0600] BIND RESULT instanceName="training1:1189" threadID=8 
+conn=29 op=0 msgID=1 requesterIP="127.0.0.1" version="3" dn="cn=directory manager" 
+authType="SIMPLE" resultCode=49 resultCodeName="Invalid Credentials" qtime=0 
+etime=0.774 authFailureID=196887 
+authFailureReason="The password provided by the user did not match any password(s) 
+stored in the user's entry" clientConnectionPolicy="default"
+[student@training1 ds1]$ 

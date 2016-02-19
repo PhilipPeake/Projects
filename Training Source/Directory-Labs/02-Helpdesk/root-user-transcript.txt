@@ -1,0 +1,73 @@
+[student@training1 ds1]$ ./bin/ldapmodify -p 1189 -D "cn=directory manager" -w password -a <<+
+> dn: uid=dsoper1,dc=example,dc=com
+> objectClass: person
+> objectClass: organizationalPerson
+> objectClass: inetOrgPerson
+> sn: OPER1
+> givenName: DS
+> cn: DS OPER1
+> userPassword: password
+> ds-privilege-name: backend-backup
+> ds-privilege-name: backend-restore
+> ds-privilege-name: config-read
+> ds-privilege-name: config-write
+> ds-privilege-name: disconnect-client
+> ds-privilege-name: ldif-export
+> ds-privilege-name: ldif-import
+> ds-privilege-name: lockdown-mode
+> ds-privilege-name: server-restart
+> ds-privilege-name: server-shutdown
+> +
+# Processing ADD request for uid=dsoper1,dc=example,dc=com
+# ADD operation successful for DN uid=dsoper1,dc=example,dc=com
+[student@training1 ds1]$ 
+[student@training1 ds1]$ ./bin/ldapmodify -p 1189 -D "cn=directory manager" -w password -a <<+
+> dn: ou=groups,dc=example,dc=com
+> objectClass: top
+> objectClass: organizationalUnit
+> ou: groups
+> 
+> dn: cn=Directory Operators,ou=Groups,dc=example,dc=com
+> objectClass: groupofuniquenames
+> objectClass: top
+> uniqueMember: uid=dsoper1,dc=example,dc=com
+> cn: Directory Operators
+> +
+# Processing ADD request for ou=groups,dc=example,dc=com
+# ADD operation successful for DN ou=groups,dc=example,dc=com
+# Processing ADD request for cn=Directory Operators,ou=Groups,dc=example,dc=com
+# ADD operation successful for DN cn=Directory Operators,ou=Groups,dc=example,dc=com
+[student@training1 ds1]$ 
+[student@training1 ds1]$ ./bin/dsconfig set-access-control-handler-prop -p 1189 -w password -n \
+> --add 'global-aci:(target="ldap:///cn=config")(targetattr="*")(version 3.0; acl "Allow DS OPERS access to config"; allow (all) groupdn="ldap:///cn=DirectoryOperators,ou=Groups,dc=example,dc=com";)'
+
+The DSEE Compat Access Control Handler was modified successfully
+[student@training1 ds1]$ 
+[student@training1 ds1]$ ./bin/dsconfig set-access-control-handler-prop -p 1189 -w password -n \
+> --add 'global-aci:(target="ldap:///cn=tasks")(targetattr="*")(version 3.0; acl "Allow DS OPERS access to tasks"; allow (all) groupdn="ldap:///cn=Directory Operators,ou=Groups,dc=example,dc=com";)'
+
+The DSEE Compat Access Control Handler was modified su[student@training1 ds1]$ ./bin/dsconfig create-local-db-index --backend-name userRoot \
+> -p 1189 -w password -n \
+> --index-name mobile \
+> --set index-type:equality
+
+Newly created indexes must be initialized using the 'rebuild-index' tool before the server will
+use them.
+
+The Local DB Index was created successfully
+[student@training1 ds1]$ ./bin/rebuild-index -p 1189 -D "uid=dsoper1,dc=example,dc=com" \
+> -w password --baseDN dc=example,dc=com --index mobile --task 
+[15:02:39]  The console logging output is also available in '/home/student/ds1/logs/tools/rebuild-index.log'
+[15:02:39]  rebuild-index was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds1/config/config.ldif -p 1189 -D uid=dsoper1,dc=example,dc=com -w ***** --baseDN dc=example,dc=com --index mobile --task
+Rebuild Index task 2015120115023912 scheduled to start immediately
+
+NOTE:  This tool is running as a task.  Killing or interrupting this tool will not have an impact on the task
+If you wish to cancel the running task, that may be accomplished using the command:  manage-tasks --no-prompt --hostname localhost --port 1189 --bindDN "uid=dsoper1,dc=example,dc=com" --bindPassword "********" --cancel "2015120115023912"
+
+[01/Dec/2015:15:02:39 -0600] severity="NOTICE" msgCount=0 msgID=1880555611 message="Administrative alert type=index-rebuild-in-progress id=412d20d1-6d80-4df7-b348-5031bee403a7 class=com.unboundid.directory.server.backends.jeb.RebuildJob msg='Beginning an index rebuild for backend userRoot'"
+[01/Dec/2015:15:02:39 -0600] severity="NOTICE" msgCount=1 msgID=8847497 message="Rebuild of index(es) mobile started with 2007 total records to process"
+[01/Dec/2015:15:02:40 -0600] severity="NOTICE" msgCount=2 msgID=8847493 message="Rebuild complete. Processed 2007 records in 0 seconds (average rate 2749.3/sec)"
+[01/Dec/2015:15:02:40 -0600] severity="NOTICE" msgCount=3 msgID=1880555611 message="Administrative alert type=index-rebuild-completed id=a9b46531-0666-40b6-9167-51c3ee571913 class=com.unboundid.directory.server.backends.jeb.RebuildJob msg='Completed an index rebuild for backend userRoot'"
+Rebuild Index task 2015120115023912 has been successfully completed
+[student@training1 ds1]$ ccessfully
+[student@training1 ds1]$ 

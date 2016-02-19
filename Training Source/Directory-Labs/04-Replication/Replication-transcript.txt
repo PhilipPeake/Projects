@@ -1,0 +1,812 @@
+[student@training1 ds1]$ cd $HOME
+[student@training1 ~]$ ds1/bin/stop-ds
+[student@training1 ~]$ rm -rf ds1
+[student@training1 ~]$ 
+[student@training1 ~]$ unzip /install/UnboundID-DS-5*.zip   
+[student@training1 ~]$ mv UnboundID-DS ds1
+[student@training1 ~]$ 
+[student@training1 ~]$ cd ds1
+[student@training1 ds1]$ ./setup --cli --acceptLicense -n -d 2000 -p 1189 \
+>     -w password --maxHeapSize 512m -L
+
+UnboundID Identity Data Store 5.1.5.2
+Please wait while the setup program initializes...
+Configuring Identity Data Store ..... Done
+Importing Automatically-Generated Data (2000 Entries) .............
+
+[student@training1 ds1]$ ./bin/dsreplication 
+
+
+>>>> Replication Main Menu
+
+What do you want to do?
+
+    1)  Display replication status
+    2)  Manage the topology (add and remove servers)
+    3)  Initialize replica data over the network
+    4)  Initialize replica data manually
+    5)  Replace existing data on all servers
+
+    q)  quit
+
+Enter option: 2
+
+
+>>>> Manage Replication Topology
+
+Select an operation for more information.
+
+    1)  Enable Replication -- add or re-attach a server to the topology
+    2)  Disable Replication -- permanently remove a running replica from the topology
+    3)  Remove Defunct Server -- permanently remove an unavailable server from the topology
+    4)  Cleanup Server -- remove replication artifacts from an offline, local server (allowing it
+        to be re-added to a topology)
+
+    b)  back
+    q)  quit
+
+Enter option [b]: 1
+
+
+>>>> Enable Replication
+
+This operation will update the configuration of the servers to replicate the data under the
+specified base DN.  If one of the servers is already replicating the data under the base DN with
+other servers, this operation will update the configuration of all the servers (so it is
+sufficient to perform this operation once for each server you add to the replication topology).
+The server-to-server replication communication is always secured with SSL.
+
+This operation will require root user credentials to create the Global Administrator account for
+the topology.
+
+    c)  continue
+    b)  back
+    q)  quit
+
+Enter option [c]: 
+
+
+>>>> Specify LDAP connection parameters for the first server
+
+Identity Data Store hostname or IP address [training1.trn]: 
+
+How do you want to connect to the Identity Data Store on training1.trn?
+
+    1)  LDAP
+    2)  LDAP with SSL
+    3)  LDAP with StartTLS
+
+Enter option [1]: 
+
+Identity Data Store on training1.trn port number [1189]: 
+
+Global Administrator User ID, or bind DN if no Global Administrator is defined [cn=Directory
+Manager]: 
+
+Password for user 'cn=Directory Manager': 
+
+
+>>>> Specify LDAP connection parameters for the second server
+
+Identity Data Store hostname or IP address [training1.trn]: 
+
+How do you want to connect to the Identity Data Store on training1.trn?
+
+    1)  LDAP
+    2)  LDAP with SSL
+    3)  LDAP with StartTLS
+
+Enter option [1]: 
+
+Identity Data Store on training1.trn port number [2189]: 1289
+
+Global Administrator User ID, or bind DN if no Global Administrator is defined [cn=Directory
+Manager]: 
+
+Password for user 'cn=Directory Manager': 
+
+Choose one or more available base DNs for which to enable replication:
+
+    1)  dc=example,dc=com
+
+    c)  cancel
+
+Enter one or more choices separated by commas [1]: 
+
+Do you plan to configure entry balancing using the Identity Proxy? (yes / no) [no]: 
+
+Replication port for the first server (the port must be free) [8989]: 1190
+
+Do you want to allow the first server to act as a WAN gateway between servers at different
+locations? (yes / no) [yes]: 
+
+Gateway priority of the first server. Within a single location, the active server with the highest
+gateway priority is the only server to exchange updates with remote locations. Values 1 through 10
+are allowed with 1 being the highest and 10 being the lowest priority value. Note that multiple
+servers may have the same priority assigned [5]: 
+
+The first server has not been configured with a location. Assigning a location to each server in
+the replication topology reduces network traffic in multi-site deployments. Would you like to set
+the location in the first server? (yes / no) [yes]: 
+
+The location of the first server: LOCATION1
+
+Replication port for the second server (the port must be free) [8989]: 1290
+
+
+Do you want to allow the second server to act as a WAN gateway between servers at different
+locations? (yes / no) [yes]: 
+
+Gateway priority of the second server. Within a single location, the active server with the
+highest gateway priority is the only server to exchange updates with remote locations. Values 1
+through 10 are allowed with 1 being the highest and 10 being the lowest priority value. Note that
+multiple servers may have the same priority assigned [5]: 
+
+The second server has not been configured with a location. Assigning a location to each server in
+the replication topology reduces network traffic in multi-site deployments. Would you like to set
+the location in the second server? (yes / no) [yes]: 
+
+The location of the second server [LOCATION1]: 
+
+Specify the user ID of the global administrator account that will be used to manage the UnboundID
+Identity Data Store instances to be replicated [admin]: 
+
+Password for the global administrator: 
+Confirm Password: 
+
+Establishing connections ..... Done
+Locking topology at ldap://training1.trn:1189 to prevent concurrent configuration changes ..... Done
+Locking topology at ldap://training1.trn:1289 to prevent concurrent configuration changes ..... Done
+Checking backend writability on ldap://training1.trn:1189 ..... Done
+Checking backend writability on ldap://training1.trn:1289 ..... Done
+Checking availability of referenced replication servers ..... Done
+Checking version of referenced replicas ..... Done
+Setting location to LOCATION1 at ldap://training1.trn:1189 ..... Done
+Setting location to LOCATION1 at ldap://training1.trn:1289 ..... Done
+Checking registration information ..... Done
+
+
+Server training1.trn:1189 has been registered so that tools will prefer communicating with this
+server using LDAP on port 1189.  If you reconfigure this server or would prefer the tools
+communicate with this server over a different protocol modify the 'preferredSecurity' property
+using the dsframework tool.
+
+
+Server training1.trn:1289 has been registered so that tools will prefer communicating with this
+server using LDAP on port 1289.  If you reconfigure this server or would prefer the tools
+communicate with this server over a different protocol modify the 'preferredSecurity' property
+using the dsframework tool.
+Configuring replication port on server training1.trn:1189 ..... Done
+Configuring replication port on server training1.trn:1289 ..... Done
+Updating replication configuration for base DN dc=example,dc=com on server training1.trn:1189
+.....Done
+Updating replication configuration for base DN dc=example,dc=com on server training1.trn:1289
+.....Done
+Updating registration configuration on server training1.trn:1189 ..... Done
+Updating registration configuration on server training1.trn:1289 ..... Done
+Updating replication configuration for base DN cn=schema on server training1.trn:1189 ..... Done
+Updating replication configuration for base DN cn=schema on server training1.trn:1289 ..... Done
+Initializing registration information on server ldap://training1.trn:1289 with the registration
+information from server ldap://training1.trn:1189 .....Done
+Initializing schema on server ldap://training1.trn:1289 with the schema from server
+ldap://training1.trn:1189 .....Done
+Unlocking the replication topology at ldap://training1.trn:1189 ..... Done
+Unlocking the replication topology at ldap://training1.trn:1289 ..... Done
+
+Replication has been successfully enabled.  If the contents of the base DNs that are being
+replicated have not been initialized, then use dsreplication initialize to do so.
+
+
+>>>> Manage Replication Topology
+
+Select an operation for more information.
+
+    1)  Enable Replication -- add or re-attach a server to the topology
+    2)  Disable Replication -- permanently remove a running replica from the topology
+    3)  Remove Defunct Server -- permanently remove an unavailable server from the topology
+    4)  Cleanup Server -- remove replication artifacts from an offline, local server (allowing it
+        to be re-added to a topology)
+
+    b)  back
+    q)  quit
+
+Enter option [b]: q
+[student@training1 ds1]$ 
+[student@training1 ds1]$ ./bin/dsreplication status -p 1189 --adminUID admin \
+>     -w password --no-prompt --showall --displayservertable
+
+          --- Replication Servers: dc=example,dc=com ---
+Server             : Location  : Priority (1) : Status    : Generation ID : Server ID
+-------------------:-----------:--------------:-----------:---------------:----------
+training1.trn:1190 : LOCATION1 : 5            : Available : 110203351     : 19682
+training1.trn:1290 : LOCATION1 : 5 (*)        : Available : 1085022570    : 31994
+
+[1] WAN Gateway Priority.  WAN gateways are marked with a *. To minimize WAN utilization, the
+server with the WAN Gateway role is the only server in a location that exchanges updates with
+remote locations.
+
+          --- Replication Status for dc=example,dc=com: Enabled ---
+Server             : Location  : Entries : Conflict Entries : Backlog (1) : Rate (2) : A.O.B.C. (3) : Generation ID : Replica ID
+-------------------:-----------:---------:------------------:-------------:----------:--------------:---------------:-----------
+training1.trn:1189 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6493
+training1.trn:1289 : LOCATION1 : 1       : 0                : 0           : 0        : 0 seconds    : 1085022570    : 6011
+
+WARNING:  Multiple generation IDs were detected for this suffix.  Replication uses generation IDs
+to ensure consistency between replica servers by validating that each has started with the same
+version of the data.  Changes made at one server are not replicated to another server if it has a
+different generation ID.  A list of servers in this topology and their generation IDs follow.
+Refer to the documentation for the best way to initialize these instances to bring their
+generation IDs in sync.
+
+[1] Replication Backlog.  The number of changes that have not yet replicated to this server.  A
+value near 0 implies the server is caught up and in sync with all other servers.
+[2] Recent Change Rate.  The rate (updates/second) that this server is currently processing
+incoming updates.
+[3] Age of Oldest Backlog Change.  The age of the oldest update that this server has not received
+yet.
+
+[student@training1 ds1]$ 
+[student@training1 ds1]$ tail logs/replication 
+[01/Dec/2015:16:08:08.754 -0600] threadID=171 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at training1.trn:1190 provided generation ID 110203351 for suffix dc=example,dc=com that does not match the local generation ID 1085022570. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:16:08:09.285 -0600] threadID=28 category=REPLICATION severity=NOTICE msgID=15138878 msg="Connected to server training1.trn:1190 for cn=schema [id: 19682]"
+[01/Dec/2015:16:08:10.107 -0600] threadID=207 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at training1.trn:1190 provided generation ID 746702922 for suffix cn=admin data that does not match the local generation ID 1353030823. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:16:08:10.123 -0600] threadID=207 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at training1.trn:1190 provided generation ID 746702922 for suffix cn=admin data that does not match the local generation ID 1353030823. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:16:08:12.683 -0600] threadID=213 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=admin data"
+[01/Dec/2015:16:08:12.687 -0600] threadID=213 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=admin data has successfully completed"
+[01/Dec/2015:16:08:14.686 -0600] threadID=217 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=admin data"
+[01/Dec/2015:16:08:14.691 -0600] threadID=217 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=admin data has successfully completed"
+[01/Dec/2015:16:08:16.589 -0600] threadID=223 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=schema"
+[01/Dec/2015:16:08:16.904 -0600] threadID=223 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=schema has successfully completed"
+[student@training1 ds1]$ 
+
+[student@training1 ds1]$ ./bin/dsreplication
+
+
+>>>> Replication Main Menu
+
+What do you want to do?
+
+    1)  Display replication status
+    2)  Manage the topology (add and remove servers)
+    3)  Initialize replica data over the network
+    4)  Initialize replica data manually
+    5)  Replace existing data on all servers
+
+    q)  quit
+
+Enter option: 3
+
+
+>>>> Initialize Replica Data Over Network
+
+Over-the-network initialization allows one or more remote servers to be populated from a source
+server using the replication protocol.
+
+    1)  Initialize -- initialize a single server with data from another server
+    2)  Initialize All -- initialize all servers in the topology with data from a server
+
+    b)  back
+    q)  quit
+
+Enter option [b]: 1
+
+
+>>>> Initialize
+
+This operation will initialize the data under a specified base DN on a destination server with
+data from of a source server ('Initialize All' can also be used for this purpose).
+
+    c)  continue
+    b)  back
+    q)  quit
+
+Enter option [c]: 
+
+
+>>>> Specify a server within the replication topology
+
+Identity Data Store hostname or IP address [training1.trn]: 
+
+How do you want to connect to the Identity Data Store on training1.trn?
+
+    1)  LDAP
+    2)  LDAP with SSL
+    3)  LDAP with StartTLS
+
+Enter option [1]: 
+
+Identity Data Store on training1.trn port number [1189]: 
+
+Global Administrator User ID [admin]: 
+
+Password for user 'admin': 
+
+
+>>>> Specify the source server
+
+Choose the server hosting the data with which the target server will be initialized
+
+    1)  training1.trn:1189
+    2)  training1.trn:1289
+
+    i)  Display information about one of these servers
+    c)  cancel
+
+Enter option: 1
+
+Global Administrator User ID [admin]: 
+
+Password for user 'admin': 
+
+Choose one or more base DNs to initialize:
+
+    1)  dc=example,dc=com
+
+    c)  cancel
+
+Enter one or more choices separated by commas [1]: 
+
+
+
+>>>> Specify the target server
+
+Choose the server of which the selected base DNs will be initialized with data from the source
+server
+
+    1)  training1.trn:1289
+
+    i)  Display information about one of these servers
+    c)  cancel
+
+Enter option: 1
+
+
+>>>> Specify LDAP connection parameters
+
+Global Administrator User ID [admin]: 
+
+Password for user 'admin': 
+
+Initializing the contents of a base DN removes all the existing contents of that base DN.  Do you
+want to remove the contents of the selected base DNs on server training1.trn:1289 and replace them
+with the contents of server training1.trn:1189? (yes / no) [yes]: 
+
+Locking topology at ldap://training1.trn:1189 to prevent concurrent configuration changes ..... Done
+
+Initializing base DN dc=example,dc=com with the contents from training1.trn:1189:
+Verifying that the source and destination replicas are connected to the topology
+
+An initialization task has been started on training1.trn:1289. To stop initialization, you can
+cancel the task by executing:
+
+	manage-tasks --hostname training1.trn --port 1289 --cancel
+	initialize-dc_example_dc_com-1449008368867
+
+Canceling an initialization task will require that you manually re-enable the backend on
+training1.trn:1289 before retrying.
+
+
+[16:19:29] 0 MB processed.
+[16:19:31] 4 of 4 MB processed (100% complete).
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=2 msgID=1880555611
+message="Administrative alert type=config-change id=3efcdc91-7e5d-4e32-a458-42d8b86b1744
+class=com.unboundid.directory.server.admin.util.ConfigAuditLog msg='A configuration change has
+been made in the Identity Data Store:  [01/Dec/2015:16:19:30.037 -0600] conn=-47 op=31300
+dn='cn=Internal Client,cn=Internal,cn=Root DNs,cn=config' authtype=[Internal] from=internal
+to=internal command='dsconfig set-backend-prop --backend-name userRoot --set enabled:false''"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=3 msgID=8847402 message="The
+database backend userRoot using Berkeley DB Java Edition 6.3.10 and containing 2003 entries has
+started"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=4 msgID=1879507338
+message="Starting group processing for backend userRoot"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=5 msgID=1879507339
+message="Completed group processing for backend userRoot"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="INFORMATION" msgCount=6 msgID=1891631108
+message="Starting access control processing for backend userRoot"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="INFORMATION" msgCount=7 msgID=12582962
+message="Added 3 Access Control Instruction (ACI) attribute types found in context
+'dc=example,dc=com' to the access control evaluation engine"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=8 msgID=1880555611
+message="Administrative alert type=config-change id=901d6121-20e0-4581-8b5a-466f1e646d6e
+class=com.unboundid.directory.server.admin.util.ConfigAuditLog msg='A configuration change has
+been made in the Identity Data Store:  [01/Dec/2015:16:19:30.522 -0600] conn=-47 op=31308
+dn='cn=Internal Client,cn=Internal,cn=Root DNs,cn=config' authtype=[Internal] from=internal
+to=internal command='dsconfig set-backend-prop --backend-name userRoot --set enabled:true''"
+[16:19:31] [01/Dec/2015:16:19:30 -0600] severity="NOTICE" msgCount=9 msgID=118947966
+message="Successfully completed binary copy replica initialization for domain dc=example,dc=com"
+
+
+Base DN initialized successfully.
+Unlocking the replication topology at ldap://training1.trn:1189 ..... Done
+
+See /home/student/ds1/logs/tools/dsreplication.log for a detailed log of this operation.
+
+
+
+>>>> Initialize Replica Data Over Network
+
+Over-the-network initialization allows one or more remote servers to be populated from a source
+server using the replication protocol.
+
+    1)  Initialize -- initialize a single server with data from another server
+    2)  Initialize All -- initialize all servers in the topology with data from a server
+
+    b)  back
+    q)  quit
+
+Enter option [b]: q
+[student@training1 ds1]$ tail logs/replication 
+[01/Dec/2015:16:08:10.107 -0600] threadID=207 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at training1.trn:1190 provided generation ID 746702922 for suffix cn=admin data that does not match the local generation ID 1353030823. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:16:08:10.123 -0600] threadID=207 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at training1.trn:1190 provided generation ID 746702922 for suffix cn=admin data that does not match the local generation ID 1353030823. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:16:08:12.683 -0600] threadID=213 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=admin data"
+[01/Dec/2015:16:08:12.687 -0600] threadID=213 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=admin data has successfully completed"
+[01/Dec/2015:16:08:14.686 -0600] threadID=217 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=admin data"
+[01/Dec/2015:16:08:14.691 -0600] threadID=217 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=admin data has successfully completed"
+[01/Dec/2015:16:08:16.589 -0600] threadID=223 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica cn=schema"
+[01/Dec/2015:16:08:16.904 -0600] threadID=223 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica cn=schema has successfully completed"
+[01/Dec/2015:16:19:28.877 -0600] threadID=235 category=REPLICATION severity=NOTICE msgID=118947863 msg="Starting export of replica dc=example,dc=com"
+[01/Dec/2015:16:19:29.285 -0600] threadID=235 category=REPLICATION severity=NOTICE msgID=118947864 msg="Export of replica dc=example,dc=com has successfully completed"
+[student@training1 ds1]$ ./bin/dsreplication status -p 1189 --adminUID admin     -w password --no-prompt --showall --displayservertable
+
+          --- Replication Servers: dc=example,dc=com ---
+Server             : Location  : Priority (1) : Status    : Generation ID : Server ID
+-------------------:-----------:--------------:-----------:---------------:----------
+training1.trn:1190 : LOCATION1 : 5            : Available : 110203351     : 19682
+training1.trn:1290 : LOCATION1 : 5 (*)        : Available : 110203351     : 31994
+
+[1] WAN Gateway Priority.  WAN gateways are marked with a *. To minimize WAN utilization, the
+server with the WAN Gateway role is the only server in a location that exchanges updates with
+remote locations.
+
+          --- Replication Status for dc=example,dc=com: Enabled ---
+Server             : Location  : Entries : Conflict Entries : Backlog (1) : Rate (2) : A.O.B.C. (3) : Generation ID : Replica ID
+-------------------:-----------:---------:------------------:-------------:----------:--------------:---------------:-----------
+training1.trn:1189 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6493
+training1.trn:1289 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6011
+
+[1] Replication Backlog.  The number of changes that have not yet replicated to this server.  A
+value near 0 implies the server is caught up and in sync with all other servers.
+[2] Recent Change Rate.  The rate (updates/second) that this server is currently processing
+incoming updates.
+[3] Age of Oldest Backlog Change.  The age of the oldest update that this server has not received
+yet.
+
+[student@training1 ds1]$ ./bin/ldapmodify -p 1189 -D "cn=directory manager" -w password <<+
+> dn: uid=user.1999,ou=People,dc=example,dc=com
+> changeType: modify
+> replace: description
+> description: This is a modify done on DS1
+> +
+# Processing MODIFY request for uid=user.1999,ou=People,dc=example,dc=com
+# MODIFY operation successful for DN uid=user.1999,ou=People,dc=example,dc=com
+[student@training1 ds1]$ ./bin/ldapsearch -p 1289 -D "cn=directory manager" -w password \
+>     -b dc=example,dc=com "(uid=user.1999)" dn description
+dn: uid=user.1999,ou=People,dc=example,dc=com
+description: This is a modify done on DS1
+
+[student@training1 ds1]$ ./bin/ldapmodify -p 1289 -D "cn=directory manager" -w password <<+
+> dn: uid=user.1998,ou=People,dc=example,dc=com
+> changeType: modify
+> replace: description
+> description: This is a modify done on DS2
+> +
+# Processing MODIFY request for uid=user.1998,ou=People,dc=example,dc=com
+# MODIFY operation successful for DN uid=user.1998,ou=People,dc=example,dc=com
+[student@training1 ds1]$ ./bin/ldapsearch -p 1189 -D "cn=directory manager" -w password \
+>     -b dc=example,dc=com "(uid=user.1999)" dn description
+dn: uid=user.1999,ou=People,dc=example,dc=com
+description: This is a modify done on DS1
+
+[student@training1 ~]$ cd
+[student@training1 ~]$ unzip -qq /install/UnboundID-DS-5.*.zip
+[student@training1 ~]$ mv UnboundID-DS/ ds3
+[student@training1 ~]$ cd ds3
+[student@training1 ds3]$ ./setup --cli --acceptLicense -n -a -p 1389 -w password
+
+UnboundID Identity Data Store 5.1.5.2
+Please wait while the setup program initializes...
+Configuring Identity Data Store ..... Done
+Creating Base Entry dc=example,dc=com ..... Done
+Starting Identity Data Store ..... Done
+
+To see basic server configuration and status, you can use the /home/student/ds3/bin/status tool.
+
+See /home/student/ds3/logs/tools/setup.log for a detailed log of this operation.
+[student@training1 ds3]$ 
+[student@training1 ds3]$ ./bin/dsreplication enable --host1 127.0.0.1 --port1 1189 \
+> --bindDN1 "cn=Directory Manager" --bindPassword1 password \
+> --replicationPort1 1190 \
+> --host2 127.0.0.1 --port2 1389 \
+> --bindDN2 "cn=Directory Manager" --bindPassword2 password \
+> --replicationPort2 1390 --baseDN dc=example,dc=com --adminUID admin \
+> --adminPassword password --no-prompt --ignoreWarnings
+
+WARNING: using host name(s) '127.0.0.1' will cause problems unless the replication topology is
+restricted to a single host.  In most cases you should identify a host using a name or IP address
+that uniquely distinguishes it from all other hosts in a network
+
+Establishing connections ..... Done
+Locking topology at ldap://127.0.0.1:1189 to prevent concurrent configuration changes ..... Done
+Locking topology at ldap://127.0.0.1:1389 to prevent concurrent configuration changes ..... Done
+Checking backend writability on ldap://127.0.0.1:1189 ..... Done
+Checking backend writability on ldap://127.0.0.1:1389 ..... Done
+
+WARNING: the information provided for the first server ('127.0.0.1:1189') does not match the
+information stored in the server registry ('training1.trn:1189').  To ensure consistency across
+servers, the tool will use the information found in the server registry
+
+Checking availability of referenced replication servers ..... Done
+Checking version of referenced replicas ..... Done
+
+WARNING:  Identity Data Store at ldap://127.0.0.1:1389 has not been configured with a location.
+Assigning a location to each server in the replication topology is highly recommended
+
+Checking registration information ..... Done
+
+
+Server 127.0.0.1:1389 has been registered so that tools will prefer communicating with this server
+using LDAP on port 1389.  If you reconfigure this server or would prefer the tools communicate
+with this server over a different protocol modify the 'preferredSecurity' property using the
+dsframework tool.
+Updating remote references on server training1.trn:1189 ..... Done
+Configuring replication port on server 127.0.0.1:1389 ..... Done
+Updating replication configuration for base DN dc=example,dc=com on server training1.trn:1189
+.....Done
+Updating replication configuration for base DN dc=example,dc=com on server 127.0.0.1:1389 ..... Done
+Updating replication configuration for base DN dc=example,dc=com on server training1.trn:1289
+.....Done
+Updating remote references on server training1.trn:1289 ..... Done
+Updating registration configuration on server training1.trn:1189 ..... Done
+Updating registration configuration on server 127.0.0.1:1389 ..... Done
+Updating registration configuration on server training1.trn:1289 ..... Done
+Updating replication configuration for base DN cn=schema on server training1.trn:1189 ..... Done
+Updating replication configuration for base DN cn=schema on server 127.0.0.1:1389 ..... Done
+Updating replication configuration for base DN cn=schema on server training1.trn:1289 ..... Done
+Initializing registration information on server ldap://127.0.0.1:1389 with the registration
+information from server ldap://training1.trn:1189 .....Done
+Initializing schema on server ldap://127.0.0.1:1389 with the schema from server
+ldap://training1.trn:1189 .....Done
+Unlocking the replication topology at ldap://127.0.0.1:1189 ..... Done
+Unlocking the replication topology at ldap://127.0.0.1:1389 ..... Done
+
+Replication has been successfully enabled.  If the contents of the base DNs that are being
+replicated have not been initialized, then use dsreplication initialize to do so.
+[student@training1 ds3]$ 
+[student@training1 ds3]$ cd $HOME/ds1
+[student@training1 ds1]$ mkdir backups
+[student@training1 ds1]$ ./bin/backup --backupDirectory backups --backUpAll
+[17:57:31]  The console logging output is also available in '/home/student/ds1/logs/tools/backup.log'
+[17:57:31]  backup was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds1/config/config.ldif --backupDirectory backups --backUpAll
+[17:57:32]  Starting backup for backend adminRoot
+[17:57:32]  Starting backup for backend ads-truststore
+[17:57:32]  Starting backup for backend alarms
+[17:57:32]  Starting backup for backend alerts
+[17:57:32]  Starting backup for backend changelog
+[17:57:32]  Starting backup for backend config
+[17:57:32]  Starting backup for backend encryption-settings
+[17:57:32]  Starting backup for backend replicationChanges
+[17:57:32]  Archived: 00000000.jdb
+[17:57:32]  Starting backup for backend schema
+[17:57:32]  Starting backup for backend tasks
+[17:57:32]  Starting backup for backend userRoot
+[17:57:32]  Archived: 00000000.jdb
+[17:57:32]  The backup process completed successfully
+[student@training1 ds1]$ ls -lR backups
+backups:
+total 44
+drwx------ 2 student training 4096 Dec  1 17:57 adminRoot
+drwx------ 2 student training 4096 Dec  1 17:57 ads-truststore
+drwx------ 2 student training 4096 Dec  1 17:57 alarms
+drwx------ 2 student training 4096 Dec  1 17:57 alerts
+drwx------ 2 student training 4096 Dec  1 17:57 changelog
+drwx------ 2 student training 4096 Dec  1 17:57 config
+drwx------ 2 student training 4096 Dec  1 17:57 encryption-settings
+drwx------ 2 student training 4096 Dec  1 17:57 replicationChanges
+drwx------ 2 student training 4096 Dec  1 17:57 schema
+drwx------ 2 student training 4096 Dec  1 17:57 tasks
+drwx------ 2 student training 4096 Dec  1 17:57 userRoot
+
+backups/adminRoot:
+total 44
+-rw------- 1 student training 39297 Dec  1 17:57 adminRoot-backup-20151201235727Z
+-rw------- 1 student training   419 Dec  1 17:57 backup.info
+
+backups/ads-truststore:
+total 12
+-rw------- 1 student training 5010 Dec  1 17:57 ads-truststore-backup-20151201235727Z
+-rw------- 1 student training  449 Dec  1 17:57 backup.info
+
+backups/alarms:
+total 8
+-rw------- 1 student training 211 Dec  1 17:57 alarms-backup-20151201235727Z
+-rw------- 1 student training 405 Dec  1 17:57 backup.info
+
+backups/alerts:
+total 12
+-rw------- 1 student training 6187 Dec  1 17:57 alerts-backup-20151201235727Z
+-rw------- 1 student training  405 Dec  1 17:57 backup.info
+
+backups/changelog:
+total 0
+
+backups/config:
+total 672
+-rw------- 1 student training    413 Dec  1 17:57 backup.info
+-rw------- 1 student training 682820 Dec  1 17:57 config-backup-20151201235727Z
+
+backups/encryption-settings:
+total 8
+-rw------- 1 student training 483 Dec  1 17:57 backup.info
+-rw------- 1 student training  22 Dec  1 17:57 encryption-settings-backup-20151201235727Z
+
+backups/replicationChanges:
+total 48
+-rw------- 1 student training   554 Dec  1 17:57 backup.info
+-rw------- 1 student training 42212 Dec  1 17:57 replicationChanges-backup-20151201235727Z
+
+backups/schema:
+total 652
+-rw------- 1 student training    405 Dec  1 17:57 backup.info
+-rw------- 1 student training 663272 Dec  1 17:57 schema-backup-20151201235727Z
+
+backups/tasks:
+total 16
+-rw------- 1 student training  403 Dec  1 17:57 backup.info
+-rw------- 1 student training 9440 Dec  1 17:57 tasks-backup-20151201235727Z
+
+backups/userRoot:
+total 3748
+-rw------- 1 student training    1036 Dec  1 17:57 backup.info
+-rw------- 1 student training 3833183 Dec  1 17:57 userRoot-backup-20151201235727Z
+[student@training1 ds1]$ 
+
+[student@training1 ds1]$ cd $HOME/ds3
+[student@training1 ds3]$ ./bin/stop-ds
+[01/Dec/2015:17:59:50.574 -0600] threadID=165 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at 127.0.0.1:1390 provided generation ID 1085022570 for suffix dc=example,dc=com that does not match the local generation ID 110203351. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:17:59:50.574 -0600] threadID=196 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at 127.0.0.1:1390 provided generation ID 1085022570 for suffix dc=example,dc=com that does not match the local generation ID 110203351. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+# Logger shut down at 01/Dec/2015:17:59:52 -0600
+[student@training1 ds3]$ ./bin/restore --backupDirectory ../ds1/backups/userRoot/
+[18:00:00]  The console logging output is also available in '/home/student/ds3/logs/tools/restore.log'
+[18:00:00]  restore was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds3/config/config.ldif --backupDirectory ../ds1/backups/userRoot/
+[18:00:00]  Restored: 00000000.jdb (size 3832265)
+[18:00:00]  The restore process completed successfully
+[student@training1 ds3]$ ./bin/restore --backupDirectory ../ds1/backups/replicationChanges
+[18:00:08]  The console logging output is also available in '/home/student/ds3/logs/tools/restore.log'
+[18:00:08]  restore was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds3/config/config.ldif --backupDirectory ../ds1/backups/replicationChanges
+[18:00:08]  Restored: 00000000.jdb (size 41859)
+[18:00:08]  The restore process completed successfully
+[student@training1 ds3]$ ./bin/start-ds
+[01/Dec/2015:18:00:19.596 -0600] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Identity Data Store 5.1.5.2 (build 20151021205310Z, R21524) starting up"
+[01/Dec/2015:18:00:24.692 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=98ed3597-3c75-4017-9294-99236837fbf3 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store is starting'"
+[01/Dec/2015:18:00:28.484 -0600] category=REPLICATION severity=NOTICE msgID=118947974 msg="The replication server startup min replication backlog count is 5000"
+[01/Dec/2015:18:00:28.518 -0600] category=REPLICATION severity=NOTICE msgID=118947923 msg="The replication backlog of 0 has dropped below the configured threshold of 5000. Backlog processing completed"
+[01/Dec/2015:18:00:29.076 -0600] category=CORE severity=NOTICE msgID=458887 msg="The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully"
+[01/Dec/2015:18:00:29.077 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=f48909cc-38e9-4f8b-ac42-555aadad6061 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully'"
+[student@training1 ds3]$ ./bin/dsreplication status -p 1189 --adminUID admin     -w password --no-prompt --showall --displayservertable
+
+          --- Replication Servers: dc=example,dc=com ---
+Server             : Location  : Priority (1) : Status    : Generation ID : Server ID
+-------------------:-----------:--------------:-----------:---------------:----------
+127.0.0.1:1390     : N/A       : 5 (*)        : Available : 110203351     : 23278
+training1.trn:1190 : LOCATION1 : 5            : Available : 110203351     : 19682
+training1.trn:1290 : LOCATION1 : 5 (*)        : Available : 110203351     : 31994
+
+[1] WAN Gateway Priority.  WAN gateways are marked with a *. To minimize WAN utilization, the
+server with the WAN Gateway role is the only server in a location that exchanges updates with
+remote locations.
+
+          --- Replication Status for dc=example,dc=com: Enabled ---
+Server             : Location  : Entries : Conflict Entries : Backlog (1) : Rate (2) : A.O.B.C. (3) : Generation ID : Replica ID
+-------------------:-----------:---------:------------------:-------------:----------:--------------:---------------:-----------
+127.0.0.1:1389     : N/A       : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 19959
+training1.trn:1189 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6493
+training1.trn:1289 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6011
+
+[1] Replication Backlog.  The number of changes that have not yet replicated to this server.  A
+value near 0 implies the server is caught up and in sync with all other servers.
+[2] Recent Change Rate.  The rate (updates/second) that this server is currently processing
+incoming updates.
+[3] Age of Oldest Backlog Change.  The age of the oldest update that this server has not received
+yet.
+
+[student@training1 ds3]$ 
+[student@training1 ds1]$ cd $HOME/ds3
+[student@training1 ds3]$ ./bin/stop-ds
+[01/Dec/2015:17:59:50.574 -0600] threadID=165 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at 127.0.0.1:1390 provided generation ID 1085022570 for suffix dc=example,dc=com that does not match the local generation ID 110203351. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+[01/Dec/2015:17:59:50.574 -0600] threadID=196 category=REPLICATION severity=NOTICE msgID=15138895 msg="The following error has been received: <Replication server at 127.0.0.1:1390 provided generation ID 1085022570 for suffix dc=example,dc=com that does not match the local generation ID 110203351. Replication will resume for this domain when it is initialized and the generation IDs are equal>"
+# Logger shut down at 01/Dec/2015:17:59:52 -0600
+[student@training1 ds3]$ ./bin/restore --backupDirectory ../ds1/backups/userRoot/
+[18:00:00]  The console logging output is also available in '/home/student/ds3/logs/tools/restore.log'
+[18:00:00]  restore was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds3/config/config.ldif --backupDirectory ../ds1/backups/userRoot/
+[18:00:00]  Restored: 00000000.jdb (size 3832265)
+[18:00:00]  The restore process completed successfully
+[student@training1 ds3]$ ./bin/restore --backupDirectory ../ds1/backups/replicationChanges
+[18:00:08]  The console logging output is also available in '/home/student/ds3/logs/tools/restore.log'
+[18:00:08]  restore was run with the following arguments:  --configClass com.unboundid.directory.server.extensions.ConfigFileHandler --configFile /home/student/ds3/config/config.ldif --backupDirectory ../ds1/backups/replicationChanges
+[18:00:08]  Restored: 00000000.jdb (size 41859)
+[18:00:08]  The restore process completed successfully
+[student@training1 ds3]$ ./bin/start-ds
+[01/Dec/2015:18:00:19.596 -0600] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Identity Data Store 5.1.5.2 (build 20151021205310Z, R21524) starting up"
+[01/Dec/2015:18:00:24.692 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=98ed3597-3c75-4017-9294-99236837fbf3 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store is starting'"
+[01/Dec/2015:18:00:28.484 -0600] category=REPLICATION severity=NOTICE msgID=118947974 msg="The replication server startup min replication backlog count is 5000"
+[01/Dec/2015:18:00:28.518 -0600] category=REPLICATION severity=NOTICE msgID=118947923 msg="The replication backlog of 0 has dropped below the configured threshold of 5000. Backlog processing completed"
+[01/Dec/2015:18:00:29.076 -0600] category=CORE severity=NOTICE msgID=458887 msg="The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully"
+[01/Dec/2015:18:00:29.077 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=f48909cc-38e9-4f8b-ac42-555aadad6061 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully'"
+[student@training1 ds3]$ ./bin/dsreplication status -p 1189 --adminUID admin     -w password --no-prompt --showall --displayservertable
+
+          --- Replication Servers: dc=example,dc=com ---
+Server             : Location  : Priority (1) : Status    : Generation ID : Server ID
+-------------------:-----------:--------------:-----------:---------------:----------
+127.0.0.1:1390     : N/A       : 5 (*)        : Available : 110203351     : 23278
+training1.trn:1190 : LOCATION1 : 5            : Available : 110203351     : 19682
+training1.trn:1290 : LOCATION1 : 5 (*)        : Available : 110203351     : 31994
+
+[1] WAN Gateway Priority.  WAN gateways are marked with a *. To minimize WAN utilization, the
+server with the WAN Gateway role is the only server in a location that exchanges updates with
+remote locations.
+
+          --- Replication Status for dc=example,dc=com: Enabled ---
+Server             : Location  : Entries : Conflict Entries : Backlog (1) : Rate (2) : A.O.B.C. (3) : Generation ID : Replica ID
+-------------------:-----------:---------:------------------:-------------:----------:--------------:---------------:-----------
+127.0.0.1:1389     : N/A       : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 19959
+training1.trn:1189 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6493
+training1.trn:1289 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6011
+
+[1] Replication Backlog.  The number of changes that have not yet replicated to this server.  A
+value near 0 implies the server is caught up and in sync with all other servers.
+[2] Recent Change Rate.  The rate (updates/second) that this server is currently processing
+incoming updates.
+[3] Age of Oldest Backlog Change.  The age of the oldest update that this server has not received
+yet.
+
+[student@training1 ds3]$ ./bin/dsconfig create-location --location-name LOCATION1 \
+>     -p 1389 --bindPassword password -n
+
+The Location was created successfully
+[student@training1 ds3]$ 
+[student@training1 ds3]$ ./bin/dsconfig set-global-configuration-prop --set location:LOCATION1 \
+>     -p 1389 --bindPassword password -n
+
+One or more configuration property changes require administrative action or
+confirmation/notification.  Those properties include:
+
+ * location:  In order for this modification to take effect the server must be restarted.
+
+The Global Configuration was modified successfully
+[student@training1 ds3]$ ./bin/stop-ds -R
+Stopping Server...
+# Logger shut down at 01/Dec/2015:18:03:26 -0600
+[01/Dec/2015:18:03:36.577 -0600] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Identity Data Store 5.1.5.2 (build 20151021205310Z, R21524) starting up"
+[01/Dec/2015:18:03:41.662 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=f3c294a1-0668-49b2-b315-8cd5bf698b31 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store is starting'"
+[01/Dec/2015:18:03:45.204 -0600] category=REPLICATION severity=NOTICE msgID=118947974 msg="The replication server startup min replication backlog count is 5000"
+[01/Dec/2015:18:03:47.643 -0600] category=REPLICATION severity=NOTICE msgID=118947923 msg="The replication backlog of 0 has dropped below the configured threshold of 5000. Backlog processing completed"
+[01/Dec/2015:18:03:48.145 -0600] category=CORE severity=NOTICE msgID=458887 msg="The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully"
+[01/Dec/2015:18:03:48.146 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=36a67da3-7fb4-440b-bc79-2db09eb3dc89 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully'"
+[student@training1 ds3]$ ./bin/dsreplication status -p 1189 --adminUID admin     -w password --no-prompt --showall --displayservertable
+
+          --- Replication Servers: dc=example,dc=com ---
+Server             : Location  : Priority (1) : Status    : Generation ID : Server ID
+-------------------:-----------:--------------:-----------:---------------:----------
+127.0.0.1:1390     : LOCATION1 : 5            : Available : 110203351     : 23278
+training1.trn:1190 : LOCATION1 : 5            : Available : 110203351     : 19682
+training1.trn:1290 : LOCATION1 : 5 (*)        : Available : 110203351     : 31994
+
+[1] WAN Gateway Priority.  WAN gateways are marked with a *. To minimize WAN utilization, the
+server with the WAN Gateway role is the only server in a location that exchanges updates with
+remote locations.
+
+          --- Replication Status for dc=example,dc=com: Enabled ---
+Server             : Location  : Entries : Conflict Entries : Backlog (1) : Rate (2) : A.O.B.C. (3) : Generation ID : Replica ID
+-------------------:-----------:---------:------------------:-------------:----------:--------------:---------------:-----------
+127.0.0.1:1389     : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 19959
+training1.trn:1189 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6493
+training1.trn:1289 : LOCATION1 : 2003    : 0                : 0           : 0        : 0 seconds    : 110203351     : 6011
+
+[1] Replication Backlog.  The number of changes that have not yet replicated to this server.  A
+value near 0 implies the server is caught up and in sync with all other servers.
+[2] Recent Change Rate.  The rate (updates/second) that this server is currently processing
+incoming updates.
+[3] Age of Oldest Backlog Change.  The age of the oldest update that this server has not received
+yet.
+
+[student@training1 ds3]$ 

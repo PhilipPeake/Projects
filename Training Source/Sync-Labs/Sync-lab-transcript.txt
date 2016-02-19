@@ -1,0 +1,761 @@
+[student@training1 ~]$ unzip -qq /install/UnboundID-DS-5.*.zip
+[student@training1 ~]$ mv UnboundID-DS/ ds4
+[student@training1 ~]$ cd ds4
+[student@training1 ds4]$ ./setup --cli --acceptLicense -n -a -p 1489 -w password
+
+UnboundID Identity Data Store 5.1.5.2
+Please wait while the setup program initializes...
+Configuring Identity Data Store ..... Done
+Creating Base Entry dc=example,dc=com ..... Done
+Starting Identity Data Store ..... Done
+
+To see basic server configuration and status, you can use the /home/student/ds4/bin/status tool.
+
+See /home/student/ds4/logs/tools/setup.log for a detailed log of this operation.
+[student@training1 ds4]$ cd
+[student@training1 ~]$ unzip -qq /install/UnboundID-Sync-5.*.zip
+[student@training1 ~]$ mv UnboundID-Sync/ sync
+[student@training1 ~]$ cd sync
+[student@training1 sync]$ ./setup --cli --acceptLicense -n -p 1689 -w password
+
+UnboundID Identity Data Sync Server 5.1.5.2
+Please wait while the setup program initializes...
+Configuring Identity Data Sync Server ..... Done
+Starting Identity Data Sync Server ..... Done
+
+To see basic server configuration and status, you can use the /home/student/sync/bin/status tool.
+
+See /home/student/sync/logs/tools/setup.log for a detailed log of this operation.
+[student@training1 sync]$ 
+[student@training1 sync]$ ./bin/create-sync-pipe-config 
+
+
+>>>> Create Initial Synchronization Configuration
+
+This tool is used to configure a basic Identity Data Sync Server configuration.  The tool will
+prompt for basic information about your topology including directory server instances and
+credentials for communicating with them.  This tool will record the configuration in a dsconfig
+batch file and apply the configuration to the local Identity Data Sync Server.
+
+Continue with Sync Pipe Configuration? (yes / no) [yes]: 
+
+
+>>>> Synchronization Mode
+
+There are two types of Sync Pipe: "standard" and "notification." A standard Sync Pipe fetches the
+full entries from both the source and destination and compares them to produce the minimal set of
+changes to bring the destination into sync. A notification Sync Pipe skips the fetch, compares
+phases of processing, notifies the destination that a change has happened, and provides it with
+the details of the change. Notifications are currently only supported from UnboundID and
+Alcatel-Lucent servers.
+
+How should changes be synchronized?
+
+    1)  Standard mode (preferred)
+    2)  Notification mode
+
+    q)  quit
+
+Enter option [1]: 
+
+
+>>>> Synchronization Direction
+
+The Identity Data Sync Server can synchronize changes one way (from a source to a destination
+endpoint) or in both directions so that changes made at either endpoint are synchronized.
+
+What type of configuration would you like to create?
+
+    1)  One way
+    2)  Bi-directional
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 2
+
+
+>>>> First Endpoint Type
+
+Enter the type for the first endpoint:
+
+    1)   UnboundID Identity Data Store
+    2)   UnboundID Identity Proxy
+    3)   Alcatel-Lucent Directory Server
+    4)   Alcatel-Lucent Directory Proxy Server
+    5)   Sun/Oracle Directory Server Enterprise Edition
+    6)   Microsoft Active Directory
+    7)   Microsoft SQL Server
+    8)   Oracle Database
+    9)   Generic JDBC
+    10)  Custom Server SDK Extension
+
+    b)   back
+    q)   quit
+
+Enter option [1]: 
+
+
+>>>> First Endpoint Name
+
+Create a name for the first endpoint:
+
+    b)  back
+    q)  quit
+
+Create a name or choose a menu item [UnboundID Identity Data Store]: UBID-Source
+
+
+>>>> Base DNs for 'UBID-Source'
+
+Enter the base DNs where synchronized entries can be found in endpoint 'UBID-Source':
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [dc=example,dc=com]: 
+
+Enter the base DNs where synchronized entries can be found in endpoint 'UBID-Source':
+
+    1)  Remove dc=example,dc=com
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [Press ENTER when finished entering base DNs]: 
+
+
+>>>> 'UBID-Source' Server Security
+
+Specify the type of security that the Identity Data Sync Server will use when communicating with
+endpoint server instances:
+
+    1)  None
+    2)  SSL
+    3)  StartTLS
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+
+>>>> 'UBID-Source' Servers
+
+An endpoint (i.e. a Sync Source or a Sync Destination) can include a single server, or in a
+highly-available environment, it can include multiple servers that are all part of the same
+replication topology.  The order the servers are specified here determines the preferred
+connection order for the Identity Data Sync Server.  That is, the Identity Data Sync Server will
+connect to the first server if it is available, the second server if it is not, etc.
+
+Enter the host:port of the first server at the 'UBID-Source' endpoint:
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [training1.trn:389]: training1.trn:1189
+
+
+Testing connection to training1.trn:1189 ..... Done
+
+Enter another server at the 'UBID-Source' endpoint:
+
+    1)  Remove training1.trn:1189
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: training1.trn:1289
+
+
+Testing connection to training1.trn:1289 ..... Done
+
+Enter another server at the 'UBID-Source' endpoint:
+
+    1)  Remove training1.trn:1189
+    2)  Remove training1.trn:1289
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: 
+
+
+>>>> Synchronization User Account for 'UBID-Source'
+
+Create the DN of the account that will be used when communicating with external server instances.
+Specify an account that will be exclusively used by the Identity Data Sync Server. In a later
+step, this tool creates this account or sets its password for each external server instance you
+specify.
+
+Create the DN of the synchronization user account for servers in 'UBID-Source':
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [cn=Sync User,cn=Root DNs,cn=config]: 
+
+Create a password for 'cn=Sync User,cn=Root DNs,cn=config': 
+Confirm the password for 'cn=Sync User,cn=Root DNs,cn=config': 
+
+
+>>>> Second Endpoint Type
+
+Enter the type for the second endpoint:
+
+    1)   UnboundID Identity Data Store
+    2)   UnboundID Identity Proxy
+    3)   Alcatel-Lucent Directory Server
+    4)   Alcatel-Lucent Directory Proxy Server
+    5)   Sun/Oracle Directory Server Enterprise Edition
+    6)   Microsoft Active Directory
+    7)   Microsoft SQL Server
+    8)   Oracle Database
+    9)   Generic JDBC
+    10)  Custom Server SDK Extension
+
+    b)   back
+    q)   quit
+
+Enter option [1]: 
+
+
+>>>> Second Endpoint Name
+
+Create a name for the second endpoint:
+
+    b)  back
+    q)  quit
+
+Create a name or choose a menu item [UnboundID Identity Data Store 2]: UBID-Dest
+
+
+>>>> Base DNs for 'UBID-Dest'
+
+Enter the base DNs where synchronized entries can be found in endpoint 'UBID-Dest':
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [dc=example,dc=com]: 
+
+Enter the base DNs where synchronized entries can be found in endpoint 'UBID-Dest':
+
+    1)  Remove dc=example,dc=com
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [Press ENTER when finished entering base DNs]: 
+
+
+>>>> 'UBID-Dest' Server Security
+
+Specify the type of security that the Identity Data Sync Server will use when communicating with
+endpoint server instances:
+
+    1)  None
+    2)  SSL
+    3)  StartTLS
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+
+>>>> 'UBID-Dest' Servers
+
+An endpoint (i.e. a Sync Source or a Sync Destination) can include a single server, or in a
+highly-available environment, it can include multiple servers that are all part of the same
+replication topology.  The order the servers are specified here determines the preferred
+connection order for the Identity Data Sync Server.  That is, the Identity Data Sync Server will
+connect to the first server if it is available, the second server if it is not, etc.
+
+Enter the host:port of the first server at the 'UBID-Dest' endpoint:
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [training1.trn:389]: training1.trn:1489
+
+
+Testing connection to training1.trn:1489 ..... Done
+
+Enter another server at the 'UBID-Dest' endpoint:
+
+    1)  Remove training1.trn:1489
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: 
+
+
+>>>> Synchronization User Account for 'UBID-Dest'
+
+Create the DN of the account that will be used when communicating with external server instances.
+Specify an account that will be exclusively used by the Identity Data Sync Server. In a later
+step, this tool creates this account or sets its password for each external server instance you
+specify.
+
+Create the DN of the synchronization user account for servers in 'UBID-Dest':
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [cn=Sync User,cn=Root DNs,cn=config]: 
+
+Create a password for 'cn=Sync User,cn=Root DNs,cn=config': 
+Confirm the password for 'cn=Sync User,cn=Root DNs,cn=config': 
+
+
+>>>> Prepare Server 'training1.trn:1189'
+
+Servers in a synchronization topology must be 'prepared' for synchronization.  This involves
+making sure the synchronization user account exists and has the proper privileges.
+
+Would you like to prepare server 'training1.trn:1189' for synchronization?
+
+    1)  Yes
+    2)  No
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+Configuring this server for synchronization requires manager access.  Enter the DN of an account
+capable of managing the external directory server [cn=Directory Manager]: 
+
+Enter the password for 'cn=Directory Manager': 
+
+Testing 'cn=Sync User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1189 ..... Done
+
+
+Would you like to configure this server so that the Identity Data Sync Server can access this
+server through 'cn=Sync User,cn=Root DNs,cn=config'? (yes / no) [yes]: 
+
+Created 'cn=Sync User,cn=Root DNs,cn=config'
+Verifying base DN 'dc=example,dc=com' ..... Done
+Enabling cn=changelog ..... 
+
+Enter the maximum age of changelog log entries which keeps the change log from growing too large
+and impacting server performance.  This value is formatted as [number][time unit] where time unit
+is 'h' for hours, 'd' for days, or 'w' for weeks. A larger value is typically preferred because
+this setting caps how long the Identity Data Sync Server can be offline.  A smaller value limits
+how many changes are stored and is necessary to limit excessive changelog growth in
+high-modification environments.  A value between '2h' and '7d' is recommended [2d]: 
+
+Enabling cn=changelog ..... Done
+Testing access to change number attributes ..... Done
+Testing connection to training1.trn:1189 ..... Done
+
+
+>>>> Prepare Server 'training1.trn:1289'
+
+Servers in a synchronization topology must be 'prepared' for synchronization.  This involves
+making sure the synchronization user account exists and has the proper privileges.
+
+Would you like to prepare server 'training1.trn:1289' for synchronization?
+
+    1)  Yes
+    2)  No
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+Would you like to use the previously entered manager credentials to access all prepared servers?
+(yes / no) [yes]: 
+
+Testing 'cn=Sync User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1289 ..... Done
+
+
+Would you like to configure this server so that the Identity Data Sync Server can access this
+server through 'cn=Sync User,cn=Root DNs,cn=config'? (yes / no) [yes]: 
+
+Created 'cn=Sync User,cn=Root DNs,cn=config'
+Verifying base DN 'dc=example,dc=com' ..... Done
+Enabling cn=changelog ..... 
+
+Enter the maximum age of changelog log entries which keeps the change log from growing too large
+and impacting server performance.  This value is formatted as [number][time unit] where time unit
+is 'h' for hours, 'd' for days, or 'w' for weeks. A larger value is typically preferred because
+this setting caps how long the Identity Data Sync Server can be offline.  A smaller value limits
+how many changes are stored and is necessary to limit excessive changelog growth in
+high-modification environments.  A value between '2h' and '7d' is recommended [2d]: 
+
+Enabling cn=changelog ..... Done
+Testing access to change number attributes ..... Done
+Testing connection to training1.trn:1289 ..... Done
+
+
+>>>> Prepare Server 'training1.trn:1489'
+
+Servers in a synchronization topology must be 'prepared' for synchronization.  This involves
+making sure the synchronization user account exists and has the proper privileges.
+
+Would you like to prepare server 'training1.trn:1489' for synchronization?
+
+    1)  Yes
+    2)  No
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+Testing 'cn=Sync User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1489 ..... Done
+
+
+Would you like to configure this server so that the Identity Data Sync Server can access this
+server through 'cn=Sync User,cn=Root DNs,cn=config'? (yes / no) [yes]: 
+
+Created 'cn=Sync User,cn=Root DNs,cn=config'
+Verifying base DN 'dc=example,dc=com' ..... Done
+Enabling cn=changelog ..... 
+
+Enter the maximum age of changelog log entries which keeps the change log from growing too large
+and impacting server performance.  This value is formatted as [number][time unit] where time unit
+is 'h' for hours, 'd' for days, or 'w' for weeks. A larger value is typically preferred because
+this setting caps how long the Identity Data Sync Server can be offline.  A smaller value limits
+how many changes are stored and is necessary to limit excessive changelog growth in
+high-modification environments.  A value between '2h' and '7d' is recommended [2d]: 
+
+Enabling cn=changelog ..... Done
+Testing access to change number attributes ..... Done
+Testing connection to training1.trn:1489 ..... Done
+
+
+>>>> Sync Pipe Name
+
+A Sync Pipe defines how data is synchronized from a Sync Source to a Sync Destination.
+
+Create a name for the Sync Pipe from 'UBID-Source' to 'UBID-Dest'
+
+    b)  back
+    q)  quit
+
+Create a name or choose a menu item [UBID-Source_to_UBID-Dest]: 
+
+
+>>>> Sync Pipe 'UBID-Source_to_UBID-Dest' Sync Class Definitions
+
+A Sync Class defines how a single class or type of entry (e.g. user entries) are synchronized in a
+Sync Pipe.  A Sync Class allows different types of entries to be synchronized differently. For
+example, some types of entries might have different attribute mappings, different DN construction,
+or different types of operations synchronized (e.g. modifies but not creates).  A Sync Class can
+also be used to completely exclude certain types of entries from synchronization.
+
+Would you like to customize how synchronization is performed on a per-entry type basis by defining
+one or more Sync Classes? (yes / no) [no]: 
+
+
+>>>> Sync Pipe 'UBID-Source_to_UBID-Dest' Default Sync Class Operations
+
+The default Sync Class determines how all entries that do not match any other Sync Class are
+handled, including whether creation, deletion, and/or modification of these entries are
+synchronized.
+
+Specify the operations that will be synchronized for Sync Class 'DEFAULT':
+
+    1)  Creates
+    2)  Deletes
+    3)  Modifies
+    4)  None
+
+    b)  back
+    q)  quit
+
+Enter a comma-separated list of numbers specifying the operations to synchronize [1,2,3]: 
+
+
+>>>> Sync Pipe Name
+
+A Sync Pipe defines how data is synchronized from a Sync Source to a Sync Destination.
+
+Create a name for the Sync Pipe from 'UBID-Dest' to 'UBID-Source'
+
+    b)  back
+    q)  quit
+
+Create a name or choose a menu item [UBID-Dest_to_UBID-Source]: 
+
+
+>>>> Sync Pipe 'UBID-Dest_to_UBID-Source' Sync Class Definitions
+
+A Sync Class defines how a single class or type of entry (e.g. user entries) are synchronized in a
+Sync Pipe.  A Sync Class allows different types of entries to be synchronized differently. For
+example, some types of entries might have different attribute mappings, different DN construction,
+or different types of operations synchronized (e.g. modifies but not creates).  A Sync Class can
+also be used to completely exclude certain types of entries from synchronization.
+
+Would you like to customize how synchronization is performed on a per-entry type basis by defining
+one or more Sync Classes? (yes / no) [no]: 
+
+
+>>>> Sync Pipe 'UBID-Dest_to_UBID-Source' Default Sync Class Operations
+
+The default Sync Class determines how all entries that do not match any other Sync Class are
+handled, including whether creation, deletion, and/or modification of these entries are
+synchronized.
+
+Specify the operations that will be synchronized for Sync Class 'DEFAULT':
+
+    1)  Creates
+    2)  Deletes
+    3)  Modifies
+    4)  None
+
+    b)  back
+    q)  quit
+
+Enter a comma-separated list of numbers specifying the operations to synchronize [1,2,3]: 
+
+
+>>>> Configuration Summary
+
+  Sync Pipe: UBID-Source_to_UBID-Dest
+
+    Source: UBID-Source
+      Type: UnboundID Identity Data Store
+      Access Account: cn=Sync User,cn=Root DNs,cn=config
+      Base DN: dc=example,dc=com
+      Servers: training1.trn:1189,training1.trn:1289
+
+    Destination: UBID-Dest
+      Type: UnboundID Identity Data Store
+      Access Account: cn=Sync User,cn=Root DNs,cn=config
+      Base DN: dc=example,dc=com
+      Servers: training1.trn:1489
+
+    Sync Classes: 
+      DEFAULT
+        Operations: Creates,Deletes,Modifies
+
+  Sync Pipe: UBID-Dest_to_UBID-Source
+
+    Source: UBID-Dest
+      Type: UnboundID Identity Data Store
+      Access Account: cn=Sync User,cn=Root DNs,cn=config
+      Base DN: dc=example,dc=com
+      Servers: training1.trn:1489
+
+    Destination: UBID-Source
+      Type: UnboundID Identity Data Store
+      Access Account: cn=Sync User,cn=Root DNs,cn=config
+      Base DN: dc=example,dc=com
+      Servers: training1.trn:1189,training1.trn:1289
+
+    Sync Classes: 
+      DEFAULT
+        Operations: Creates,Deletes,Modifies
+
+
+    w)  write configuration file
+    b)  back
+    q)  quit
+
+Enter option [w]: 
+
+
+>>>> Write Configuration File
+
+The configuration will be written to a dsconfig batch file that can be used to configure other
+Identity Data Sync Servers.
+
+Writing Identity Data Sync Server configuration to /home/student/sync/sync-pipe-cfg.dsconfig .....Done
+
+This tool can apply the configuration changes to the local Identity Data Sync Server. This
+requires any configured Server SDK extensions to be in place. Do you want to do this? (yes / no)
+[yes]: 
+
+
+>>>> Specify LDAP connection parameters
+
+How do you want to connect to the Identity Data Sync Server on localhost?
+
+    1)  LDAP
+    2)  LDAP with SSL
+    3)  LDAP with StartTLS
+
+Enter option [1]: 
+
+Administrator user bind DN [cn=Directory Manager]: 
+
+Password for user 'cn=Directory Manager': 
+
+Creating External Servers ..... Done
+Creating Endpoints ..... Done
+Creating Sync Pipes ..... Done
+Creating Attribute and DN Mappings ..... Done
+Creating Sync Classes ..... Done
+
+
+Synchronization was successfully configured, but real-time synchronization has not yet been
+started.
+
+Refer to the product documentation for a recommended approach for initially bringing the two
+endpoints into sync. Once this is done, you can enable real-time synchronization using the
+'realtime-sync' tool.
+
+Press RETURN to continue 
+
+See logs/tools/create-sync-pipe-config.log for a detailed log of this operation.
+[student@training1 sync]$ 
+[student@training1 sync]$ ./bin/ldapsearch -p 1489 -b dc=example,dc=com -D "cn=Directory Manager" \
+> -w password "(objectclass=*)"
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+[student@training1 sync]$ ./bin/resync -p UBID-Source_to_UBID-Dest
+[12:34:19]  The console logging output is also available in '/home/student/sync/logs/tools/resync-errors.log'
+[12:34:19]  resync was run with the following arguments:  -p UBID-Source_to_UBID-Dest
+[12:34:21]  MILD_ERROR:  The extensions directory /home/student/sync/extensions does not exist, therefore no extensions will be loaded
+Starting pass 1
+
+
+Status after completing all passes
+[04/Dec/2015:12:34:34 -0600]
+----------------------------------
+Source entries retrieved      2003
+Entries in-sync               1
+Entries created               2002
+Duration (seconds)            9
+
+
+Resync completed in 9 s.
+
+1 entries were in-sync, 0 entries were modified, 2002 entries were created, 0 entries are still out-of-sync, 0 entries are still missing, and 0 entries could not be processed due to an error
+[student@training1 sync]$ ./bin/ldapsearch -p 1489 -b dc=example,dc=com -D "cn=Directory Manager" \
+> -w password "(objectclass=*)" | more
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+dn: ou=People,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+dn: uid=admin,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+sn: User
+cn: Admin User
+givenName: Admin
+userPassword: {SSHA}huSZ1yza4dQrzDoblS8iU2p/mTNn5BlpvnphEQ==
+uid: admin
+
+dn: uid=user.15,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+mail: user.15@maildomain.net
+initials: JLG
+homePhone: +1 197 576 3730
+pager: +1 681 935 0160
+givenName: Jen
+employeeNumber: 15
+telephoneNumber: +1 648 015 0888
+mobile: +1 279 019 3087
+sn: Grimm
+cn: Jen Grimm
+userPassword: {SSHA}wdt1umUeZDYbyD97trzp4YEBcOZz1HGWMybRYg==
+description: This is the description for Jen Grimm.
+street: 30650 Cherry Street
+[student@training1 sync]$ 
+[student@training1 sync]$ 
+[student@training1 sync]$ 
+[student@training1 sync]$ ./bin/realtime-sync start -p 1689 -w password -n \
+> --pipe-name UBID-Source_to_UBID-Dest \
+> --pipe-name UBID-Dest_to_UBID-Source
+
+The Sync Pipe was modified successfully
+The sync pipe 'UBID-Source_to_UBID-Dest' is now started.
+
+The Sync Pipe was modified successfully
+The sync pipe 'UBID-Dest_to_UBID-Source' is now started.
+[student@training1 sync]$ ./bin/ldapmodify -p 1189 -D "cn=directory Manager" -w password <<+
+> dn: uid=user.0,ou=people,dc=example,dc=com
+> changetype: modify
+> replace: description
+> description: Change to verify sync
+> +
+# Processing MODIFY request for uid=user.0,ou=people,dc=example,dc=com
+# MODIFY operation successful for DN uid=user.0,ou=people,dc=example,dc=com
+[student@training1 sync]$ ./bin/ldapsearch -p 1489 -b dc=example,dc=com -D "cn=Directory Manager" \
+> -w password uid=user.0
+dn: uid=user.0,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+mail: user.0@maildomain.net
+initials: AOR
+homePhone: +1 295 940 2750
+pager: +1 604 109 3407
+givenName: Anett
+employeeNumber: 0
+telephoneNumber: +1 594 307 3495
+mobile: +1 164 286 4924
+sn: Rezzik
+cn: Anett Rezzik
+userPassword: {SSHA}cV5E+CQLD9MvGhYwNmbu1SSt//MGjL8Ir/hUPw==
+description: Change to verify sync
+street: 22411 Birch Street
+st: PA
+postalAddress: Anett Rezzik$22411 Birch Street$Rhinelander, PA  98160
+uid: user.0
+l: Rhinelander
+postalCode: 98160
+
+[student@training1 sync]$ 
+[student@training1 sync]$ ./bin/ldapmodify -p 1489 -D "cn=directory Manager" -w password <<+
+> dn: uid=user.1,ou=people,dc=example,dc=com
+> changetype: modify
+> replace: description
+> description: Change to verify sync from ds4
+> +
+# Processing MODIFY request for uid=user.1,ou=people,dc=example,dc=com
+# MODIFY operation successful for DN uid=user.1,ou=people,dc=example,dc=com
+[student@training1 sync]$ ./bin/ldapsearch -p 1289 -b dc=example,dc=com -D "cn=Directory Manager" -w password uid=user.1
+dn: uid=user.1,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+mail: user.1@maildomain.net
+initials: RJV
+homePhone: +1 091 438 1890
+pager: +1 472 824 8704
+givenName: Romina
+employeeNumber: 1
+telephoneNumber: +1 319 624 9982
+mobile: +1 650 622 7719
+sn: Valerio
+cn: Romina Valerio
+userPassword: {SSHA}/UwVeK8tp9UixQULpN6gGd+trwtsdE5aoaWLvA==
+description: Change to verify sync from ds4
+street: 84095 Maple Street
+st: NE
+postalAddress: Romina Valerio$84095 Maple Street$Alexandria, NE  39160
+uid: user.1
+l: Alexandria
+postalCode: 39160
+
+[student@training1 sync]$ 

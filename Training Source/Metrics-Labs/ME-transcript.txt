@@ -1,0 +1,562 @@
+[philip@alpha Lab-test]$ unzip -qq /install/UnboundID-Metrics-Engine-5.1.5.2.zip 
+[philip@alpha Lab-test]$ mv UnboundID-Metrics-Engine/ metrics
+[philip@alpha Lab-test]$ cd metrics
+[philip@alpha metrics]$ ./setup
+
+UnboundID Metrics Engine 5.1.5.2
+Please wait while the setup program initializes...
+                               UnboundID Corp.
+                         End User License Agreement
+                              (Evaluation Only)
+
+
+THIS END USER LICENSE AGREEMENT (THIS "AGREEMENT") SETS FORTH THE TERMS AND
+CONDITIONS ON WHICH UNBOUNDID CORP. ("UNBOUNDID") IS WILLING TO ALLOW YOU (IF
+YOU ARE INSTALLING THE SOFTWARE ON YOUR OWN BEHALF) OR THE BUSINESS ENTITY
+THAT IS YOUR EMPLOYER (IF YOU ARE INSTALLING THE SOFTWARE IN YOUR CAPACITY AS
+AN EMPLOYEE OR AGENT OF A BUSINESS ENTITY) (IN EITHER CASE, "YOU" or
+"LICENSEE") TO ACCESS AND USE CERTAIN SOFTWARE AND ASSOCIATED MEDIA, PRINTED
+MATERIALS, AND ONLINE OR ELECTRONIC DOCUMENTATION (COLLECTIVELY, THE "LICENSED
+MATERIALS", AS FURTHER DEFINED BELOW). THIS AGREEMENT IS A BINDING LEGAL
+AGREEMENT BETWEEN LICENSEE AND UNBOUNDID AND REPRESENTS THE ENTIRE
+UNDERSTANDING BETWEEN LICENSEE AND UNBOUNDID WITH REGARD TO THE LICENSED
+MATERIALS.  IF THIS AGREEMENT IS CONSIDERED TO BE AN OFFER BY UNBOUNDID,
+ACCEPTANCE IS EXPRESSLY LIMITED TO THE TERMS AND CONDITIONS SET FORTH HEREIN.
+
+BY YOUR EXPRESSION OF ASSENT IN ANSWER TO THE QUESTION "DO YOU ACCEPT ALL THE
+TERMS OF THE PRECEDING LICENSE AGREEMENT?" YOU INDICATE THAT YOU INTEND YOUR
+EXPRESSION OF ASSENT TO SERVE AS YOUR SIGNATURE TO THIS AGREEMENT AND TO HAVE
+THE SAME FORCE AND EFFECT AS THE USE OF A MANUAL SIGNATURE, AND IF YOU ARE
+INSTALLING THE SOFTWARE IN YOUR CAPACITY AS AN EMPLOYEE OR AGENT OF A BUSINESS
+ENTITY, YOU WARRANT THAT YOU ARE AUTHORIZED TO LEGALLY BIND SUCH ENTITY TO
+THIS AGREEMENT.  IF YOU CANNOT MAKE SUCH WARRANTY OR IF LICENSEE DOES NOT
+AGREE TO OR CANNOT COMPLY WITH ALL OF THE TERMS AND CONDITIONS OF THIS
+AGREEMENT, (1) YOU MUST NOT EXPRESS ASSENT TO THE QUESTION "DO YOU ACCEPT ALL
+THE TERMS OF THE PRECEDING LICENSE AGREEMENT?" AND (2) YOU MUST DESTROY ALL
+COPIES OF THE LICENSED MATERIALS IN YOUR POSSESSION IMMEDIATELY.
+
+
+1 Definitions.
+
+1.1   CDDL means the Common Development and Distribution License version 1.0
+
+
+Do you accept the terms of this license?  Enter 'yes' to accept, 'no' to reject, or press ENTER to
+display the next page of the license []: yes
+
+Extracting PostgreSQL binaries ..... Done
+
+
+>>>> Introduction
+
+This tool will guide you through initial configuration of the UnboundID Metrics Engine. The
+Metrics Engine collects runtime statistics from UnboundID servers and stores them in a PostgreSQL
+DBMS instance, making them available for performance and diagnostic analysis. The Metrics Engine
+listens on HTTP and/or HTTPS ports for handling monitoring data requests and on LDAP/S for
+handling miscellaneous configuration and management requests.
+
+This tool will install an embedded instance of a PostgreSQL server on this host.
+
+Continue? (yes / no) [yes]: 
+
+
+>>>> PostgreSQL Database Host and Port
+
+Specify the port number of the PostgreSQL instance to be used for storing historical monitoring
+data
+
+    b)  back
+    c)  cancel
+
+Enter option [5432]: 
+
+Testing port availability ..... Done
+
+
+>>>> Metrics Engine Embedded DBMS Data Location
+
+The basic PostgreSQL files and transactions logs will take 5GB of space. Selection of a location
+for the PostgreSQL files should consider available space and filesystem write performance. Over
+time each server monitored by the Metrics Engine will require an additional 3GB of DBMS storage. A
+typical locally attached SATA/SAS disk can support at most 16 monitored servers due to disk write
+speed limitations. To monitor more than 16 servers a filesystem with SSD storage or a hardware
+assisted write cache will be required.
+
+Enter the directory to be used for PostgreSQL data files. If the provided name is a relative path
+name it will be created in the current working directory
+
+    b)  back
+    c)  cancel
+
+Enter option [pgsql_data]: 
+
+
+>>>> PostgreSQL Database Admin Account
+
+
+The administrative password you are about to provide is used when the PostgreSQL administrative
+user is created. It is not recorded anywhere. If you forget the password the database cannot be
+maintained in the future and will have to be re-created
+
+Enter the password for philip: 
+Confirm the password for philip: 
+
+
+>>>> PostgreSQL Account for Metrics Engine
+
+Specify the name of the PostgreSQL account to be associated with the Metrics Engine historical
+monitoring data. This tool will create this user account using the admin account specified in a
+previous step, or specify an existing account name to have this server assume an existing set of
+data. By default this account will have the password 'metricsengine' though you will be given the
+opportunity to change it. Enter the name of the account name for use by the Metrics Engine
+
+    b)  back
+    c)  cancel
+
+Enter option [metricsengine]: 
+
+Change the password for account 'metricsengine'? (yes / no) [no]: 
+
+Verifying user ..... Done
+
+Enter the fully qualified host name or IP address of the local host [alpha]: alpha.vogon.net
+
+Create the initial root user DN for the Metrics Engine [cn=Directory Manager]: 
+
+Create a password for the initial root user: 
+Re-enter the password for confirmation: 
+
+On which port should the Metrics Engine accept HTTPS connections for the Metrics and Configuration
+APIs? [8443]: 
+
+On which port should the Metrics Engine accept connections from LDAP clients? [2389]: 
+
+Do you want to enable LDAPS? (yes / no) [no]: 
+
+Do you want to enable StartTLS? (yes / no) [no]: 
+
+Certificate server options:
+
+    1)  Generate self-signed certificate (recommended for testing purposes only)
+    2)  Use an existing certificate located on a Java Key Store (JKS)
+    3)  Use an existing certificate located on a PKCS12 key store
+    4)  Use an existing certificate on a PKCS11 token
+
+Enter option [1]: 
+
+By default the server listens on all available network interfaces for client connections.  Would
+you like to specify particular addresses on which this server will listen for client connections?
+(yes / no) [no]: 
+
+An adequate amount of memory must be assigned to the server for optimal performance. Choose the
+option that best characterizes how this installation should be allocated memory:
+
+    1)  Aggressive  The system is dedicated to running only this server (use 10g of 31g total
+                    memory)
+    2)  Minimal     Use the bare minimum memory (2g) -- useful for evaluating product functionality
+                    at a small scale only
+    3)  Manual      Enter the amount of memory explicitly
+
+Enter option: 3
+
+It is recommended that you devote a large portion of this host's memory to the Metrics Engine,
+local PostgreSQL database, and filesystem cache. Memory requirements increase as you add more
+monitored servers and/or have the Metrics Engine collect more data. In general you should consider
+allocating half the available memory to the Metrics Engine and splitting the rest of the memory
+between the filesystem cache and the PostgreSQL database. Enter the maximum amount of memory to be
+allocated to the server and tools. The format for this value is the same as the -Xmx JVM option
+which is a number followed by a unit m or g. A value between '2g' and '10g' is recommended [10g]: 2g
+
+The total amount of memory currently available on this system (1628m) is less than the amount
+being requested (2g). Use value '2g'? (yes / no) [yes]: 
+
+Do you want to start the server when the configuration is completed? (yes / no) [yes]: 
+
+
+Setup Summary
+=============
+PostgreSQL Server:                 localhost:5432
+PostgreSQL Server Data Directory:  /home/philip/Lab-test/metrics/pgsql_data
+PostgreSQL Database:               metricsengine
+PostgreSQL Account:                metricsengine
+Host Name:                         alpha.vogon.net
+Root User DN:                      cn=Directory Manager
+LDAP Listener Port:                2389
+HTTPS Listener Port:               8443
+Secure Access:                     Create a new self-signed certificate
+                                   Generate default trust store
+
+The Metrics Engine will be started after configuration
+
+
+What would you like to do?
+
+    1)  Set up the server with the parameters above
+    2)  Provide the setup parameters again
+    3)  Cancel the setup
+
+Enter option [1]: 
+
+
+Updating PostgreSQL Database ..... Done
+Starting PostgreSQL ..... Done
+Configuring Database Access ..... Done
+Creating Database Schema ..... Done
+Configuring HTTP Handlers ..... Done
+Configuring Metrics Engine ..... Done
+Configuring Certificates ..... Done
+
+Configuring Monitoring ..... Done
+
+Starting Metrics Engine ..... Done
+
+>>>> Metrics Engine Next Steps.
+
+Next you should use the monitored-servers tool's add-servers command to configure the Metrics
+Engine with the set of servers to monitor. The tool can be used to configure multiple servers at a
+time as well as prepare individual servers for monitoring.  See the online help for more
+information. You can also use the dsconfig tool to manage the set of monitored servers and
+fine-tune the server's configuration.
+
+To see basic server configuration and status, you can use the
+/home/philip/Lab-test/metrics/bin/status tool.
+
+See /home/philip/Lab-test/metrics/logs/tools/setup.log for a detailed log of this operation.
+[philip@alpha metrics]$ 
+[philip@alpha metrics]$ ./bin/dsconfig -n -p 2389 -D "cn=Directory Manager" \
+>     -w password create-location \
+>     --location-name LOCATION1
+
+The Location was created successfully
+[philip@alpha metrics]$ ./bin/dsconfig set-global-configuration-prop -n \
+>     -p 2389 -D "cn=Directory Manager" -w password \
+>     --set location:LOCATION1
+
+One or more configuration property changes require administrative action or
+confirmation/notification.  Those properties include:
+
+ * location:  In order for this modification to take effect the server must be restarted.
+
+The Global Configuration was modified successfully
+[philip@alpha metrics]$ ./bin/stop-metrics-engine -R
+Stopping Server...
+# Logger shut down at 18/Dec/2015:12:21:12 -0800
+Stopping Database .....
+Starting Database .....
+[18/Dec/2015:12:21:18.228 -0800] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Metrics Engine 5.1.5.2 (build 20151021210227Z, R21524) starting up"
+[18/Dec/2015:12:21:20.516 -0800] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=dcfe56f7-4dd1-4dab-85c6-5cbcf8ae876c class=com.unboundid.directory.server.core.MetricsEngine msg='The Metrics Engine is starting'"
+[18/Dec/2015:12:21:23.115 -0800] category=CORE severity=NOTICE msgID=458887 msg="The Metrics Engine (UnboundID Metrics Engine 5.1.5.2 build 20151021210227Z, R21524) has started successfully"
+[18/Dec/2015:12:21:23.115 -0800] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=cc860c6d-3c27-4219-ad47-0732a531b2f9 class=com.unboundid.directory.server.core.MetricsEngine msg='The Metrics Engine (UnboundID Metrics Engine 5.1.5.2 build 20151021210227Z, R21524) has started successfully'"
+[philip@alpha metrics]$
+[philip@alpha metrics]$ ./bin/monitored-servers add-servers -p 2389 \
+>     --bindDN "cn=directory manager" \
+>     --bindPassword password \
+>     --monitoringUserBindPassword password \
+>     --remoteServerHostname localhost \
+>     --remoteServerPort 1189 \
+>     --remoteServerBindPassword password \
+>     --dry-run
+Examining alpha.vogon.net:1189 ..... Done
+Reading registered servers from alpha.vogon.net:1189 ..... Done
+Examining alpha.vogon.net:1389 ..... Done
+Examining alpha.vogon.net:1289 ..... 
+Servers added to configuration: 0
+Server configurations updated: 0
+Servers prepared: 0
+Servers skipped: 0
+
+The following would have been performed by this tool if this were not a dry-run:
+
+
+Prepare server alpha.vogon.net:1189: Create entry cn=Monitoring User,cn=Root DNs,cn=config:
+
+dn: cn=Monitoring User,cn=Root DNs,cn=config
+changetype: add
+ds-privilege-name: config-read
+ds-privilege-name: metrics-read
+ds-rlim-lookthrough-limit: 0
+ds-cfg-inherit-default-root-privileges: false
+ds-pwp-password-policy-dn: cn=Root Password Policy,cn=Password Policies,cn=config
+sn: User
+ds-rlim-idle-time-limit: 0
+userPassword: password
+givenName: Monitoring
+ds-privilege-name: bypass-read-acl
+cn: Monitoring User
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: ds-cfg-root-dn-user
+ds-rlim-time-limit: 0
+ds-rlim-size-limit: 0
+ds-cfg-alternate-bind-dn: cn=Monitoring User
+
+
+Prepare server alpha.vogon.net:1189: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-enabled
+ds-cfg-enabled: true
+-
+
+
+Prepare server alpha.vogon.net:1189: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-ldap-info
+ds-cfg-ldap-info: extended
+-
+
+
+Run dsconfig on localhost: create-external-server --type unboundid-ds --no-prompt --quiet
+--server-name alpha.vogon.net:1189 --set server-host-name:localhost --set server-port:1189 --set
+bind-dn:cn=Monitoring User,cn=Root DNs,cn=config --set
+password:AAByXulEZ+thsFrR44p9SCGWrUMLWEq/Kjo=
+
+Run dsconfig on localhost: --no-prompt --quiet set-monitoring-configuration-prop --add
+monitored-server:alpha.vogon.net:1189
+
+Prepare server alpha.vogon.net:1389: Create entry cn=Monitoring User,cn=Root DNs,cn=config:
+
+dn: cn=Monitoring User,cn=Root DNs,cn=config
+changetype: add
+ds-privilege-name: config-read
+ds-privilege-name: metrics-read
+ds-rlim-lookthrough-limit: 0
+ds-cfg-inherit-default-root-privileges: false
+ds-pwp-password-policy-dn: cn=Root Password Policy,cn=Password Policies,cn=config
+sn: User
+ds-rlim-idle-time-limit: 0
+userPassword: password
+givenName: Monitoring
+ds-privilege-name: bypass-read-acl
+cn: Monitoring User
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: ds-cfg-root-dn-user
+ds-rlim-time-limit: 0
+ds-rlim-size-limit: 0
+ds-cfg-alternate-bind-dn: cn=Monitoring User
+
+
+Prepare server alpha.vogon.net:1389: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-enabled
+ds-cfg-enabled: true
+-
+
+
+Prepare server alpha.vogon.net:1389: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-ldap-info
+ds-cfg-ldap-info: extended
+-
+
+
+Run dsconfig on localhost: create-external-server --type unboundid-ds --no-prompt --quiet
+--server-name alpha.vogon.net:1389 --set server-host-name:alpha.vogon.net --set server-port:1389
+--set bind-dn:cn=Monitoring User,cn=Root DNs,cn=config --set
+password:AAAEtFfMaORqT+pGncvexbmn9uWCuFlBpts= --set location:LOCATION1
+
+Run dsconfig on localhost: --no-prompt --quiet set-monitoring-configuration-prop --add
+monitored-server:alpha.vogon.net:1389
+
+Prepare server alpha.vogon.net:1289: Create entry cn=Monitoring User,cn=Root DNs,cn=config:
+
+dn: cn=Monitoring User,cn=Root DNs,cn=config
+changetype: add
+ds-privilege-name: config-read
+ds-privilege-name: metrics-read
+ds-rlim-lookthrough-limit: 0
+ds-cfg-inherit-default-root-privileges: false
+ds-pwp-password-policy-dn: cn=Root Password Policy,cn=Password Policies,cn=config
+sn: User
+ds-rlim-idle-time-limit: 0
+userPassword: password
+givenName: Monitoring
+ds-privilege-name: bypass-read-acl
+cn: Monitoring User
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: ds-cfg-root-dn-user
+ds-rlim-time-limit: 0
+ds-rlim-size-limit: 0
+ds-cfg-alternate-bind-dn: cn=Monitoring User
+
+
+Prepare server alpha.vogon.net:1289: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-enabled
+ds-cfg-enabled: true
+-
+
+
+Prepare server alpha.vogon.net:1289: Modify entry cn=Stats Collector,cn=Plugins,cn=config:
+
+dn: cn=Stats Collector,cn=Plugins,cn=config
+changetype: modify
+replace: ds-cfg-ldap-info
+ds-cfg-ldap-info: extended
+-
+
+
+Run dsconfig on localhost: --no-prompt --quiet create-location --location-name LOCATION2
+
+Run dsconfig on localhost: create-external-server --type unboundid-ds --no-prompt --quiet
+--server-name alpha.vogon.net:1289 --set server-host-name:alpha.vogon.net --set server-port:1289
+--set bind-dn:cn=Monitoring User,cn=Root DNs,cn=config --set
+password:AACQ+TzcOk8lYgZeMot52cRAeQ7GYcpjUgk= --set location:LOCATION2
+
+Run dsconfig on localhost: --no-prompt --quiet set-monitoring-configuration-prop --add
+monitored-server:alpha.vogon.net:1289
+[philip@alpha metrics]$ 
+[philip@alpha metrics]$ ./bin/monitored-servers add-servers -p 2389 \
+>     --bindDN "cn=directory manager" \
+>     --bindPassword password \
+>     --monitoringUserBindPassword password \
+>     --remoteServerHostname localhost \
+>     --remoteServerPort 1189 \
+>     --remoteServerBindPassword password
+Examining alpha.vogon.net:1189 ..... Done
+Preparing alpha.vogon.net:1189 ..... 
+Configuration updated
+
+Done
+Adding alpha.vogon.net:1189 to configuration ..... Done
+Enabling monitoring for alpha.vogon.net:1189 ..... Done
+Reading registered servers from alpha.vogon.net:1189 ..... Done
+Examining alpha.vogon.net:1389 ..... 
+Done
+Preparing alpha.vogon.net:1389 ..... 
+
+Configuration updated
+
+Done
+Adding alpha.vogon.net:1389 to configuration ..... Done
+Enabling monitoring for alpha.vogon.net:1389 ..... Done
+Examining alpha.vogon.net:1289 ..... 
+Done
+Preparing alpha.vogon.net:1289 ..... 
+
+Configuration updated
+
+Done
+Adding alpha.vogon.net:1289 to configuration ..... Done
+Enabling monitoring for alpha.vogon.net:1289 ..... Done
+
+Servers added to configuration: 3
+Server configurations updated: 0
+Servers prepared: 3
+Servers skipped: 0
+
+NEXT STEPS: There are additional configuration steps necessary before the Metrics Engine can
+collect data from the server(s) added. Consult the Metrics Engine Administration Guide's section
+Data Collection and Metrics for more information on tuning monitored servers to make available
+metrics in which you are interested.
+[philip@alpha metrics]$ 
+[philip@alpha metrics]$ ./bin/monitored-servers add-servers -p 2389 \
+>     --bindDN "cn=directory manager" \
+>     --bindPassword password \
+>     --monitoringUserBindPassword password \
+>     --remoteServerHostname localhost \
+>     --remoteServerPort 1689 \
+>     --remoteServerBindPassword password
+Examining alpha.vogon.net:1689 ..... Done
+Preparing alpha.vogon.net:1689 ..... 
+Configuration updated
+
+Done
+Adding alpha.vogon.net:1689 to configuration ..... Done
+Enabling monitoring for alpha.vogon.net:1689 ..... Done
+Reading registered servers from alpha.vogon.net:1689 ..... Done
+
+Servers added to configuration: 1
+Server configurations updated: 0
+Servers prepared: 1
+Servers skipped: 0
+
+NEXT STEPS: There are additional configuration steps necessary before the Metrics Engine can
+collect data from the server(s) added. Consult the Metrics Engine Administration Guide's section
+Data Collection and Metrics for more information on tuning monitored servers to make available
+metrics in which you are interested.
+[philip@alpha metrics]$ 
+[philip@alpha metrics]$ ./bin/monitored-servers add-servers -p 2389 \
+>     --bindDN "cn=directory manager" \
+>     --bindPassword password \
+>     --monitoringUserBindPassword password \
+>     --remoteServerHostname localhost \
+>     --remoteServerPort 11389 \
+>     --remoteServerBindPassword password
+Examining alpha.vogon.net:11389 ..... Done
+Preparing alpha.vogon.net:11389 ..... 
+Configuration updated
+
+Done
+Adding alpha.vogon.net:11389 to configuration ..... Done
+Enabling monitoring for alpha.vogon.net:11389 ..... Done
+Reading registered servers from alpha.vogon.net:11389 ..... Done
+Examining alpha:12389 ..... 
+Done
+Preparing alpha:12389 ..... 
+
+Configuration updated
+
+Done
+Adding alpha:12389 to configuration ..... Done
+Enabling monitoring for alpha:12389 ..... Done
+
+Servers added to configuration: 2
+Server configurations updated: 0
+Servers prepared: 2
+Servers skipped: 0
+
+NEXT STEPS: There are additional configuration steps necessary before the Metrics Engine can
+collect data from the server(s) added. Consult the Metrics Engine Administration Guide's section
+Data Collection and Metrics for more information on tuning monitored servers to make available
+metrics in which you are interested.
+[philip@alpha metrics]$ 
+[philip@alpha metrics]$ cd ../proxy1
+[philip@alpha proxy1]$ ./bin/modrate -p 11389 --bindDN "cn=directory manager" \
+>     --bindPassword password \
+>     --entryDN "uid=user.[1-1999],ou=people,dc=example,dc=com" \
+>     --attribute description \
+>     --valueLength 12 \
+>     --numThreads 1 -r 10
+      Recent       Recent       Recent      Overall      Overall
+    Mods/Sec   Avg Dur ms   Errors/Sec     Mods/Sec   Avg Dur ms
+------------ ------------ ------------ ------------ ------------
+      10.000        3.699        0.000       10.000        3.699
+      10.000        2.321        0.000       10.000        3.010
+       9.999        2.221        0.000       10.000        2.747
+       9.999        2.054        0.000       10.000        2.574
+      10.002        1.931        0.000       10.000        2.445
+       9.999        1.631        0.000       10.000        2.310
+       9.999        1.647        0.000       10.000        2.215
+       9.999        1.560        0.000       10.000        2.133
+      10.002        1.428        0.000       10.000        2.055
+       9.999        1.464        0.000       10.000        1.996
+       9.999        1.377        0.000       10.000        1.939
+       9.999        1.536        0.000       10.000        1.906
+      10.001        1.374        0.000       10.000        1.865
+       9.999        1.637        0.000       10.000        1.849
+       9.999        1.364        0.000       10.000        1.816
+      10.002        1.320        0.000       10.000        1.785
+       9.999        1.322        0.000       10.000        1.758
+       9.999        1.253        0.000       10.000        1.730
+      10.000        1.595        0.000       10.000        1.723
+      10.001        1.305        0.000       10.000        1.702
+       9.999        1.307        0.000       10.000        1.683
+^C[philip@alpha proxy1]$ 

@@ -1,0 +1,228 @@
+[student@training1 proxy2]$ ./setup -n --acceptLicense -p 12389 -D "cn=Directory Manager" \
+> -w password --peerHostName training1.trn \
+> --peerPort 11389 --location LOCATION2
+
+UnboundID Identity Proxy 5.1.5.2
+Please wait while the setup program initializes...
+Reading Peer Configuration ..... Done
+Applying Peer Configuration ..... Done
+Updating Administration Data ..... Done
+Configuring Identity Proxy ..... Done
+Updating Topology Admin Data ..... Done
+
+Starting Identity Proxy ..... Done
+
+To see basic server configuration and status, you can use the /home/student/proxy2/bin/status
+tool.
+
+See /home/student/proxy2/logs/tools/setup.log for a detailed log of this operation.
+[student@training1 proxy2]$ 
+[student@training1 proxy2]$ ./bin/ldapsearch -p 12389 -b dc=example,dc=com "(uid=user.0)"
+dn: uid=user.0,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+mail: user.0@maildomain.net
+initials: AOR
+homePhone: +1 295 940 2750
+pager: +1 604 109 3407
+givenName: Anett
+employeeNumber: 0
+telephoneNumber: +1 594 307 3495
+mobile: +1 164 286 4924
+sn: Rezzik
+cn: Anett Rezzik
+description: This is the description for Anett Rezzik.
+street: 22411 Birch Street
+st: PA
+postalAddress: Anett Rezzik$22411 Birch Street$Rhinelander, PA  98160
+uid: user.0
+l: Rhinelander
+postalCode: 98160
+
+[student@training1 proxy2]$ ./bin/searchrate -p 12389 -D "cn=directory manager" -w password \
+> -b dc=example,dc=com -f "(uid=user.[0-1999])" -A sn -A uid -t 10
+      Recent       Recent       Recent       Recent      Overall      Overall
+Searches/Sec   Avg Dur ms Entries/Srch   Errors/Sec Searches/Sec   Avg Dur ms
+------------ ------------ ------------ ------------ ------------ ------------
+    1913.334        5.204        1.000        0.000     1913.332        5.204
+    3311.580        3.017        1.000        0.000     2612.425        3.818
+    3994.709        2.498        1.000        0.000     3073.165        3.246
+    4386.617        2.275        1.000        0.000     3401.569        2.933
+    5023.759        1.987        1.000        0.000     3725.986        2.678
+^C[student@training1 proxy2]$ 
+[student@training1 proxy2]$ ./bin/status -p 12389 --maxAlerts 0 -w password -n
+
+          --- Server Status ---
+Server Run Status:    Started 03/Dec/2015:13:39:51.000 -0600
+Operational Status:   Available
+Open Connections:     2
+Max Connections:      10
+Total Connections:    14
+
+          --- Server Details ---
+Host Name:            training1
+Administrative Users: cn=Directory Manager
+Administrative Users: cn=IntraProxy User
+Installation Path:    /home/student/proxy2
+Server Version:       UnboundID Identity Proxy 5.1.5.2
+Java Version:         1.8.0_51
+
+          --- Connection Handlers ---
+Address:Port  : Protocol : State    : Name
+--------------:----------:----------:-------------------------
+0.0.0.0:12389 : LDAP     : Enabled  : LDAP Connection Handler
+0.0.0.0:1689  : JMX      : Disabled : JMX Connection Handler
+0.0.0.0:636   : LDAPS    : Disabled : LDAPS Connection Handler
+0.0.0.0:8080  : HTTP     : Disabled : HTTP Connection Handler
+0.0.0.0:8443  : HTTPS    : Disabled : HTTPS Connection Handler
+
+          --- Load-Balancing Algorithms ---
+Name                                : Status    : # Available : # Degraded : # Unavailable
+------------------------------------:-----------:-------------:------------:--------------
+dc_example_dc_com-fewest-operations : AVAILABLE : 3           : 0          : 0
+
+          --- LDAP External Servers ---
+Server             : Status    : Score : LB Algorithm
+-------------------:-----------:-------:------------------------------------
+training1.trn:1189 : Available : 10    : dc_example_dc_com-fewest-operations
+training1.trn:1289 : Available : 10    : dc_example_dc_com-fewest-operations
+training1.trn:1389 : Available : 10    : dc_example_dc_com-fewest-operations
+
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1289 : 0   : 0    : 0      : 0      : 102293 : 102293
+training1.trn:1389 : 0   : 0    : 0      : 0      : 0      : 0
+* Includes compare and modify DN operations
+
+          --- Entry Balancing Request Processors ---
+-No Entry Balancing Request Processors Defined-
+
+          --- Operation Processing Time ---
+Op Type   : Total Ops : Avg Resp Time (ms)
+----------:-----------:-------------------
+Add       : 0         : 0.0
+Bind      : 0         : 0.0
+Compare   : 0         : 0.0
+Delete    : 0         : 0.0
+Modify    : 0         : 0.0
+Modify DN : 0         : 0.0
+Search    : 102293    : 2.145
+All       : 102295    : 2.145
+
+          --- Work Queue ---
+           : Recent : Average : Maximum
+-----------:--------:---------:--------
+Queue Size : 0      : 0       : 5
+% Busy     : 0      : 6       : 63
+
+          --- Alarms ---
+-No current alarms of severity [Warning,Minor,Major,Critical]-
+
+
+[student@training1 proxy2]$ # Define a function to print out op counts data only
+[student@training1 proxy2]$ ./bin/status -p 12389 --maxAlerts 0 -w password -n | sed -e '1,37d' -e '44,$d'
+[student@training1 proxy2]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1289 : 0   : 0    : 0      : 0      : 102293 : 102293
+training1.trn:1389 : 0   : 0    : 0      : 0      : 0      : 0
+[student@training1 proxy2]$
+
+[student@training1 proxy2]$ ./bin/searchrate -p 11389 -D "cn=directory manager" -w password \
+> -b dc=example,dc=com -f "(uid=user.[0-1999])" -A sn -A uid -t 10 > /dev/null &
+[1] 32286
+[student@training1 proxy2]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1289 : 0   : 0    : 0      : 0      : 102293 : 102293
+training1.trn:1389 : 0   : 0    : 0      : 0      : 0      : 0
+[student@training1 proxy2]$ cd ../proxy1
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 307060 : 307060
+training1.trn:1289 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1389 : 0   : 0    : 0      : 0      : 284209 : 284209
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 401696 : 401696
+training1.trn:1289 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1389 : 0   : 0    : 0      : 0      : 370278 : 370278
+[student@training1 proxy1]$ cd ../proxy2
+[student@training1 proxy2]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1289 : 0   : 0    : 0      : 0      : 102293 : 102293
+training1.trn:1389 : 0   : 0    : 0      : 0      : 0      : 0
+[student@training1 proxy2]$ cd ../proxy1
+[student@training1 proxy1]$ ../ds1/bin/stop-ds 
+# Logger shut down at 03/Dec/2015:13:54:33 -0600
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 592287 : 592287
+training1.trn:1289 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1389 : 0   : 0    : 0      : 0      : 659340 : 659340
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 592287 : 592287
+training1.trn:1289 : 0   : 0    : 0      : 0      : 0      : 0
+training1.trn:1389 : 0   : 0    : 0      : 0      : 799728 : 799728
+[student@training1 proxy1]$ ../ds3/bin/stop-ds 
+# Logger shut down at 03/Dec/2015:13:55:33 -0600
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search : All*
+-------------------:-----:------:--------:--------:--------:-------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 592287 : 592287
+training1.trn:1289 : 0   : 0    : 0      : 0      : 98289  : 98289
+training1.trn:1389 : 0   : 0    : 0      : 0      : 939044 : 939044
+[student@training1 proxy1]$ ../ds1/bin/start-ds 
+[03/Dec/2015:13:56:49.688 -0600] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Identity Data Store 5.1.5.2 (build 20151021205310Z, R21524) starting up"
+[03/Dec/2015:13:57:27.059 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=db3c8878-1d91-49e3-a2d9-5ec4b05b3180 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store is starting'"
+[03/Dec/2015:13:57:38.313 -0600] category=JEB severity=NOTICE msgID=1887895580 msg="Starting cache priming for 21 databases in backend userRoot"
+[03/Dec/2015:13:57:39.562 -0600] category=JEB severity=NOTICE msgID=1887895601 msg="Preloaded 2003 entry records and 51891 index records in 1 seconds"
+[03/Dec/2015:13:57:39.569 -0600] category=JEB severity=NOTICE msgID=1887895587 msg="The database cache now holds 5MB of data and is 4 percent full"
+[03/Dec/2015:13:57:39.990 -0600] category=CORE severity=NOTICE msgID=1879507304 msg="Invoking an explicit garbage collection because backend initialization took longer than 12425 milliseconds, which is greater than the forced-gc-prime-duration of 10000 milliseconds (maxMemory=518979584, allocatedMemory=518979584, usedMemory=228288888, freeMemory=290690696)"
+[03/Dec/2015:13:57:41.826 -0600] category=CORE severity=NOTICE msgID=1879507305 msg="Explicit garbage collection completed after 1826 milliseconds (maxMemory=518979584, allocatedMemory=518979584, usedMemory=228288888, freeMemory=459089032)"
+[03/Dec/2015:13:57:51.359 -0600] category=REPLICATION severity=NOTICE msgID=118947974 msg="The replication server startup min replication backlog count is 5000"
+[03/Dec/2015:13:57:53.659 -0600] category=REPLICATION severity=NOTICE msgID=118947923 msg="The replication backlog of 0 has dropped below the configured threshold of 5000. Backlog processing completed"
+[03/Dec/2015:13:57:56.792 -0600] category=CORE severity=NOTICE msgID=458887 msg="The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully"
+[03/Dec/2015:13:57:56.792 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=aef2caad-2fe5-4a39-908f-5ba93c7c94b2 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully'"
+[student@training1 proxy1]$ 
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search  : All*
+-------------------:-----:------:--------:--------:---------:--------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 673102  : 673102
+training1.trn:1289 : 0   : 0    : 0      : 0      : 1043087 : 1043087
+training1.trn:1389 : 0   : 0    : 0      : 0      : 939044  : 939044
+[student@training1 proxy1]$ f
+          --- LDAP External Server Op Counts ---
+Server             : Add : Bind : Delete : Modify : Search  : All*
+-------------------:-----:------:--------:--------:---------:--------
+training1.trn:1189 : 0   : 0    : 0      : 0      : 753404  : 753404
+training1.trn:1289 : 0   : 0    : 0      : 0      : 1043087 : 1043087
+training1.trn:1389 : 0   : 0    : 0      : 0      : 939044  : 939044
+[student@training1 proxy1]$ 
+[student@training1 proxy1]$ fg
+./bin/searchrate -p 11389 -D "cn=directory manager" -w password -b dc=example,dc=com -f "(uid=user.[0-1999])" -A sn -A uid -t 10 > /dev/null	(wd: ~/proxy2)
+^C[student@training1 proxy1]$ 
+[student@training1 proxy1]$ 
+[student@training1 proxy1]$ 

@@ -1,0 +1,344 @@
+[student@training1 proxy2]$ cd $HOME/ds2
+[student@training1 ds2]$ 
+[student@training1 ds2]$ ./bin/dsconfig create-location --location-name LOCATION2 -p 1289 \
+> --bindPassword password -n
+
+The Location was created successfully
+[student@training1 ds2]$ 
+[student@training1 ds2]$ ./bin/dsconfig set-global-configuration-prop --set location:LOCATION2 -p 1289 \
+> --bindPassword password -n
+
+One or more configuration property changes require administrative action or
+confirmation/notification.  Those properties include:
+
+ * location:  In order for this modification to take effect the server must be restarted.
+
+The Global Configuration was modified successfully
+[student@training1 ds2]$ ./bin/stop-ds -R
+Stopping Server...
+# Logger shut down at 03/Dec/2015:12:57:19 -0600
+[03/Dec/2015:12:57:29.521 -0600] category=CORE severity=NOTICE msgID=458886 msg="UnboundID Identity Data Store 5.1.5.2 (build 20151021205310Z, R21524) starting up"
+[03/Dec/2015:12:57:35.126 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-starting id=dcba93c3-129c-4583-9971-7cc5e0f60ca2 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store is starting'"
+[03/Dec/2015:12:57:38.523 -0600] category=REPLICATION severity=NOTICE msgID=118947974 msg="The replication server startup min replication backlog count is 5000"
+[03/Dec/2015:12:57:38.580 -0600] category=REPLICATION severity=NOTICE msgID=118947923 msg="The replication backlog of 0 has dropped below the configured threshold of 5000. Backlog processing completed"
+[03/Dec/2015:12:57:39.276 -0600] category=CORE severity=NOTICE msgID=458887 msg="The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully"
+[03/Dec/2015:12:57:39.277 -0600] category=EXTENSIONS severity=NOTICE msgID=1880555611 msg="Administrative alert type=server-started id=a5f25b9b-609c-49c3-a6de-73bbbcc38901 class=com.unboundid.directory.server.core.DirectoryServer msg='The Identity Data Store (UnboundID Identity Data Store 5.1.5.2 build 20151021205310Z, R21524) has started successfully'"
+[student@training1 ds2]$ 
+[student@training1 proxy1]$ ./bin/create-initial-proxy-config 
+
+
+>>>> Create Initial Proxy Configuration
+
+This tool is used to configure a basic Identity Proxy.  The tool will prompt for basic information
+about your topology including directory server instances, their locations, and the credentials for
+communicating with them.  This tool will record the configuration in a dsconfig batch file and
+apply the configuration to the local Identity Proxy.
+
+The following assumptions are made about the topology to expedite setup:
+
+	1) All servers will be accessible via a single user account
+	2) All servers support the same communication security type
+	3) All servers are UnboundID, Alcatel-Lucent 8661, Sun 
+	   Java System 5.x, 6.x, or 7.x, or Red Hat (including Fedora and 389) 
+	   directory servers
+
+If your topology does not meet these assumptions, use this tool to define a basic configuration
+and then use the 'dsconfig' tool or the web console to customize the configuration.
+
+Continue with Initial Proxy Configuration? (yes / no) [yes]: 
+
+
+>>>> External Server Access Credentials
+
+Create the DN of the root account used to communicate with directory server instances.  In a later
+step, this tool will create this account or set its password for each directory server instance
+you specify.
+
+Create the DN for the proxy user account [cn=Proxy User,cn=Root DNs,cn=config]: 
+
+Create a password for 'cn=Proxy User,cn=Root DNs,cn=config': 
+Confirm the password for 'cn=Proxy User,cn=Root DNs,cn=config': 
+
+
+
+>>>> External Server Communication Security
+
+Specify the type of security that the Identity Proxy will use when communicating with directory
+server instances:
+
+    1)  None
+    2)  SSL
+    3)  StartTLS
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+
+>>>> Proxy Base DNs
+
+A subtree view includes a single base DN used to define portions of the external servers' DIT to
+make available to clients of the Identity Proxy.  This tool will configure a subtree view for
+every base DN specified.
+
+Enter a base DN of the directory server instances that will be accessed through the Identity
+Proxy:
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [dc=example,dc=com]: 
+
+Are entries within 'dc=example,dc=com' split across multiple servers so that each server stores
+only a subset of the entries (i.e. is this base DN 'entry balanced')? (yes / no) [no]: 
+
+
+>>>> Proxy Base DNs
+
+A subtree view includes a single base DN used to define portions of the external servers' DIT to
+make available to clients of the Identity Proxy.  This tool will configure a subtree view for
+every base DN specified.
+
+Enter another base DN of the directory server instances that will be accessed through the Identity
+Proxy:
+
+    1)  Remove dc=example,dc=com
+
+    b)  back
+    q)  quit
+
+Enter a DN or choose a menu item [Press ENTER when finished entering base DNs]: 
+
+
+>>>> Define Locations
+
+Locations are used to define collections of servers which may have similar performance
+characteristics when accessed from this Identity Proxy. For example, a separate Location may be
+defined for each data center.
+
+Locations can represent the names of your data centers or the cities in which they are located.
+
+    b)  back
+    q)  quit
+
+Create a location or choose a menu item: LOCATION1
+
+    1)  Remove LOCATION1
+
+    b)  back
+    q)  quit
+
+Create another location name or choose a menu item [Press ENTER when finished creating locations]: LOCATION2
+
+    1)  Remove LOCATION1
+    2)  Remove LOCATION2
+
+    b)  back
+    q)  quit
+
+Create another location name or choose a menu item [Press ENTER when finished creating locations]: 
+
+
+>>>> Proxy Location
+
+Choose the location for this Identity Proxy
+
+    1)  LOCATION1
+    2)  LOCATION2
+
+    b)  back
+    q)  quit
+
+Enter option [1]: 
+
+
+>>>> Location 'LOCATION1' Details
+ >>>> External Servers
+
+External Servers identify directory server instances including host, port, and authentication
+information.
+
+Enter the host:port of the first directory server in 'LOCATION1':
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [training1.trn:389]: training1.trn:1189
+
+During this step, this tool checks for the existence of the proxy user account and allows you to
+create it or set its password as necessary.  If you defer this step at this time you can later use
+the prepare-external-server tool to perform this function.
+
+Would you like to prepare training1.trn:1189 for access by the Identity Proxy?
+
+    1)  Yes
+    2)  No
+    3)  Yes, and all subsequent servers
+    4)  No, and all subsequent servers
+
+Enter option [3]: 
+
+
+Enter the DN of an account on training1.trn:1189 with which to create or manage the 'cn=Proxy
+User,cn=Root DNs,cn=config' account and configuration [cn=Directory Manager]: 
+
+Enter the password for 'cn=Directory Manager': 
+
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1189 ..... Done
+
+
+Would you like to create or modify root user 'cn=Proxy User,cn=Root DNs,cn=config' so that it is
+available for this Identity Proxy? (yes / no) [yes]: 
+
+Created 'cn=Proxy User,cn=Root DNs,cn=config'
+Configuring Access ..... Done
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' privileges ..... Done
+Testing connection to training1.trn:1189 ..... Done
+Testing connection to training1.trn:1189 ..... Done
+Verifying backend 'dc=example,dc=com' ..... Done
+
+
+Enter another server in 'LOCATION1'
+
+    1)  Remove training1.trn:1189
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: training1.trn:1389
+
+
+Would you like to use the previously entered manager credentials to access all prepared servers?
+(yes / no) [yes]: 
+
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1389 ..... Done
+
+
+Would you like to create or modify root user 'cn=Proxy User,cn=Root DNs,cn=config' so that it is
+available for this Identity Proxy? (yes / no) [yes]: 
+
+Created 'cn=Proxy User,cn=Root DNs,cn=config'
+Configuring Access ..... Done
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' privileges ..... Done
+Testing connection to training1.trn:1389 ..... Done
+Testing connection to training1.trn:1389 ..... Done
+Verifying backend 'dc=example,dc=com' ..... Done
+
+
+Enter another server in 'LOCATION1'
+
+    1)  Remove training1.trn:1189
+    2)  Remove training1.trn:1389
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: 
+
+
+>>>> Location 'LOCATION2' Details
+ >>>> External Servers
+
+External Servers identify directory server instances including host, port, and authentication
+information.
+
+Enter the host:port of the first directory server in 'LOCATION2':
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [training1.trn:389]: training1.trn:1289
+
+
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' access ..... Done
+Testing connection to training1.trn:1289 ..... Done
+
+
+Would you like to create or modify root user 'cn=Proxy User,cn=Root DNs,cn=config' so that it is
+available for this Identity Proxy? (yes / no) [yes]: 
+
+Created 'cn=Proxy User,cn=Root DNs,cn=config'
+Configuring Access ..... Done
+Testing 'cn=Proxy User,cn=Root DNs,cn=config' privileges ..... Done
+Testing connection to training1.trn:1289 ..... Done
+Testing connection to training1.trn:1289 ..... Done
+Verifying backend 'dc=example,dc=com' ..... Done
+
+
+Enter another server in 'LOCATION2'
+
+    1)  Remove training1.trn:1289
+
+    b)  back
+    q)  quit
+
+Enter a host:port for LDAP communication or choose a menu item [Press ENTER when finished entering
+servers]: 
+
+
+>>>> Configuration Summary
+
+  External Server Security:  None
+  Proxy User DN:             cn=Proxy User,cn=Root DNs,cn=config
+
+  Location LOCATION1
+    Failover Order: LOCATION2
+    Servers: training1.trn:1189, training1.trn:1389
+
+  Location LOCATION2
+    Failover Order: LOCATION1
+    Servers: training1.trn:1289
+
+  Base DN: dc=example,dc=com
+    Servers: training1.trn:1189, training1.trn:1389, training1.trn:1289
+
+
+    b)  back
+    q)  quit
+    w)  write configuration file
+
+Enter option [w]: 
+
+
+>>>> Write Configuration File
+
+The configuration will be written to a dsconfig batch file that can be used to configure other
+Identity Proxys.
+
+Writing Identity Proxy configuration to /home/student/proxy1/proxy-cfg.dsconfig ..... Done
+
+This tool will apply the configuration to the Identity Proxy. Continue? (yes / no) [yes]: 
+
+
+>>>> Specify LDAP connection parameters
+
+How do you want to connect to the Identity Proxy on localhost?
+
+    1)  LDAP
+    2)  LDAP with SSL
+    3)  LDAP with StartTLS
+
+Enter option [1]: 
+
+Administrator user bind DN [cn=Directory Manager]: 
+
+Password for user 'cn=Directory Manager': 
+
+Creating Locations ..... Done
+Updating Failover Locations ..... Done
+Updating Global Configuration ..... Done
+Creating Health Checks ..... Done
+Creating External Servers ..... Done
+Creating Load-Balancing Algorithm for dc=example,dc=com ..... Done
+Creating Request Processor for dc=example,dc=com ..... Done
+Creating Subtree View for dc=example,dc=com ..... Done
+Updating Client Connection Policy for dc=example,dc=com ..... Done
+
+
+See logs/tools/create-initial-proxy-config.log for a detailed log of this operation.
+[student@training1 proxy1]$
